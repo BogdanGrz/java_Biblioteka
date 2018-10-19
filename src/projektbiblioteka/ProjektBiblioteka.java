@@ -9,9 +9,9 @@ public class ProjektBiblioteka {
 
     public static void main(String[] args) {
         Biblioteka b = new Biblioteka();
-        b.insertCzytelnik("Karol", "Maciaszek", "92873847182");
+        b.insertCzytelnik("Karolina", "Maciaszek", "92873847182");
         b.insertCzytelnik("Piotr", "Wojtecki", "89273849128");
-        b.insertCzytelnik("Abdul", "Dabdul", "");
+        b.insertCzytelnik("Abdul", "Dabdul", "pesel");
 
         b.insertKsiazka("Cień Wiatru", "Carlos Ruiz Zafon", "Horror");
         b.insertKsiazka("W pustyni i w puszczy", "Henryk Sienkiewicz", "Przygoda");
