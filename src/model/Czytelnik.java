@@ -41,6 +41,6 @@ public class Czytelnik {
 
     @Override
     public String toString() {
-        return "["+id+"] - "+imie+" "+nazwisko+" - "+pesel;
+        return "["+id+"] - "+imie+" "+nazwisko+" - "+pesel+"\n";
     }
 }
