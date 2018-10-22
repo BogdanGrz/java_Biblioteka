@@ -11,6 +11,8 @@ import java.util.List;
 
 import model.Czytelnik;
 import model.Ksiazka;
+import model.Wypozyczenie;
+import model.jointest;
 
 public class Biblioteka {
 
@@ -40,7 +42,7 @@ public class Biblioteka {
     }
 
     public boolean createTables()  {
-        String createCzytelnicy = "CREATE TABLE IF NOT EXISTS czytelnicy (id_czytelnika INTEGER PRIMARY KEY AUTOINCREMENT, imie varchar(255), nazwisko varchar(255), pesel int)";
+        String createCzytelnicy = "CREATE TABLE IF NOT EXISTS czytelnicy (id_czytelnika INTEGER(8) PRIMARY KEY AUTOINCREMENT, imie varchar(255), nazwisko varchar(255), pesel int)";
         String createKsiazki = "CREATE TABLE IF NOT EXISTS ksiazki (id_ksiazki INTEGER PRIMARY KEY AUTOINCREMENT, tytul varchar(255), autor varchar(255), gatunek varchar(255))";
         String createWypozyczenia = "CREATE TABLE IF NOT EXISTS wypozyczenia (id_wypozycz INTEGER PRIMARY KEY AUTOINCREMENT, id_czytelnika int, id_ksiazki int)";
         try {
@@ -109,7 +111,7 @@ public class Biblioteka {
             int id;
             String imie, nazwisko, pesel;
             while(result.next()) {
-                id = result.getInt("id_czytelnika");
+                id = result.getInt("id_czytelnika");           
                 imie = result.getString("imie");
                 nazwisko = result.getString("nazwisko");
                 pesel = result.getString("pesel");
@@ -180,6 +182,20 @@ public class Biblioteka {
         return true;
     }
     
+    public boolean DeleteCzytelnikId(String id)  {
+        String komenda;
+        komenda = "DELETE FROM czytelnicy WHERE id_czytelnika="+id;
+        System.out.println(komenda);
+        try {
+            stat.executeUpdate(komenda);
+        } catch (SQLException e) {
+            System.err.println("Blad przy usuwaniu z tabeli");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
 
     public List<Ksiazka> selectKsiazki() {
         List<Ksiazka> ksiazki = new LinkedList<Ksiazka>();
@@ -199,6 +215,33 @@ public class Biblioteka {
             return null;
         }
         return ksiazki;
+    }
+    
+     public List <jointest> selectJoin() {
+        List<jointest> selectJoin = new LinkedList<jointest>();
+        try {
+            
+            ResultSet result = stat.executeQuery("SELECT tytul, id_czytelnika, wy.id_ksiazki FROM ksiazki ks INNER JOIN wypozyczenia wy on ks.id_ksiazki = wy.id_ksiazki");
+            int idcz, idks;
+            String tytul, czyt;
+            //int rowCount = result.last() ? result.getRow() : 0;
+            //result.beforeFirst();
+           // System.out.println(rowCount);
+            while(result.next()) {
+                idks = result.getInt("id_ksiazki");
+                tytul = result.getString("tytul");
+                idcz = result.getInt("id_czytelnika");
+                
+                //autor = result.getString("autor");
+                //gatunek = result.getString("gatunek");
+                selectJoin.add(new jointest(idks, idcz, tytul));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        
+        return selectJoin;
     }
     
      public void CzytelnikImie (String imie, List<Czytelnik> czytelnicy){

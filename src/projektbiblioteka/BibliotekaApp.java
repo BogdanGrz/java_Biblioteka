@@ -11,6 +11,7 @@ package projektbiblioteka;
  */
 import model.Czytelnik;
 import model.Ksiazka;
+import model.Wypozyczenie;
 import Biblioteka.Biblioteka;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -18,6 +19,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.*;
+import model.jointest;
 
 public class BibliotekaApp extends javax.swing.JFrame {
     
@@ -35,7 +37,8 @@ public class BibliotekaApp extends javax.swing.JFrame {
         String [][] czyt = new String[dl][4];
         for (int i=0; i<dl; i++)
         {
-            czyt[i][0]=Integer.toString(czytelnicy.get(i).getId());
+            String tmp=String.format("%06d",czytelnicy.get(i).getId() );
+            czyt[i][0]=tmp;
             czyt[i][1]=czytelnicy.get(i).getImie();
             czyt[i][2]=czytelnicy.get(i).getNazwisko();
             czyt[i][3]=czytelnicy.get(i).getPesel();
@@ -79,6 +82,11 @@ public class BibliotekaApp extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable(model);
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        IDfield = new javax.swing.JTextField();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -97,9 +105,17 @@ public class BibliotekaApp extends javax.swing.JFrame {
         jTable2.getColumnModel().getColumn(0).setPreferredWidth(10);
         jTable2.setModel(model);
         jTable2.setCellSelectionEnabled(true);
+        jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jTable2MousePressed(evt);
+            }
+        });
         jTable2.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jTable2KeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTable2KeyReleased(evt);
             }
         });
         jScrollPane3.setViewportView(jTable2);
@@ -108,6 +124,36 @@ public class BibliotekaApp extends javax.swing.JFrame {
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("jButton3");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        IDfield.setText("ID");
+
+        jButton4.setText("USUN");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setText("dodaj ksiazke");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        jButton6.setText("pokaz joina");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
             }
         });
 
@@ -126,7 +172,18 @@ public class BibliotekaApp extends javax.swing.JFrame {
                         .addGap(27, 27, 27)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jButton2)
-                            .addComponent(jButton1))))
+                            .addComponent(jButton1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton3)
+                                .addGap(153, 153, 153)
+                                .addComponent(IDfield, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton4))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jButton6)
+                                .addComponent(jButton5)))))
                 .addGap(0, 20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -137,10 +194,21 @@ public class BibliotekaApp extends javax.swing.JFrame {
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
-                .addContainerGap(140, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton3)
+                    .addComponent(IDfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(jButton5)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton6)
+                .addContainerGap(93, Short.MAX_VALUE))
         );
 
         pack();
@@ -168,7 +236,51 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 // id is the primary key of my DB
                 String id = jTable2.getValueAt(row, 0).toString();
                 b.updateCzytelnik(id,resul,column);}
+        //else if (evt.getKeyCode() == KeyEvent.VK_UP) {int row = jTable2.getSelectedRow();
+         //String tmp = jTable2.getValueAt(row, 0).toString();
+        //IDfield.setText(tmp);}
     }//GEN-LAST:event_jTable2KeyPressed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        b.insertCzytelnik("Maria", "Kiszka", "734873487324");
+        System.out.println("Dodano Czytelnika");
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        b.DeleteCzytelnikId(IDfield.getText());
+        System.out.println("USUNIETO CZYTELNIKA");
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        b.insertKsiazka("jakistytul", "jakisautor", "przygoda");
+        b.insertWypozycz(1, 1);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+       List<Ksiazka> ksiazki = b.selectKsiazki();
+        System.out.println("Lista książek:");
+       for(Ksiazka k: ksiazki)
+        System.out.println(k);
+       
+       List<jointest> join = b.selectJoin();
+        System.out.println("Join");
+       for(jointest k: join)
+        System.out.println(k);
+       
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jTable2MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MousePressed
+         int row = jTable2.getSelectedRow();
+         String tmp = jTable2.getValueAt(row, 0).toString();
+        IDfield.setText(tmp);
+    }//GEN-LAST:event_jTable2MousePressed
+
+    private void jTable2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable2KeyReleased
+        if ((evt.getKeyCode() == KeyEvent.VK_UP) || (evt.getKeyCode() == KeyEvent.VK_DOWN) ) 
+        {int row = jTable2.getSelectedRow();
+         String tmp = jTable2.getValueAt(row, 0).toString();
+        IDfield.setText(tmp);}
+    }//GEN-LAST:event_jTable2KeyReleased
 
     /**
      * @param args the command line arguments
@@ -200,7 +312,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
         /* Create and display the form */
         Biblioteka b = new Biblioteka();
         
-        b.insertCzytelnik("Bogdan", "Grzą", "82568598755");
+        
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -226,7 +338,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
                   
         
         
-        List<Ksiazka> ksiazki = b.selectKsiazki();
+        
         System.out.println("----------------------");
         b.CzytelnikImie("Karol", czytelnicy);
         System.out.println("----------------------");
@@ -235,9 +347,9 @@ public class BibliotekaApp extends javax.swing.JFrame {
         //    if (c.getImie().equalsIgnoreCase("karol"))    
              //  System.out.println(c);
 
-       // System.out.println("Lista książek:");
-       // for(Ksiazka k: ksiazki)
-         //   System.out.println(k);
+       //System.out.println("Lista książek:");
+       //for(Ksiazka k: ksiazki)
+        //System.out.println(k);
         
         
         //System.out.println(czytelnicy.get(0).getImie());
@@ -254,8 +366,13 @@ public class BibliotekaApp extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField IDfield;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable2;
