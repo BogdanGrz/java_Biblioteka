@@ -102,8 +102,10 @@ public class Biblioteka {
 
     public List<Czytelnik> selectCzytelnicy() {
         List<Czytelnik> czytelnicy = new LinkedList<Czytelnik>();
+        String select="SELECT * FROM czytelnicy";
+        System.out.println(select);
         try {
-            ResultSet result = stat.executeQuery("SELECT * FROM czytelnicy");
+            ResultSet result = stat.executeQuery(select);
             int id;
             String imie, nazwisko, pesel;
             while(result.next()) {
@@ -112,6 +114,7 @@ public class Biblioteka {
                 nazwisko = result.getString("nazwisko");
                 pesel = result.getString("pesel");
                 czytelnicy.add(new Czytelnik(id, imie, nazwisko, pesel));
+    
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -119,6 +122,64 @@ public class Biblioteka {
         }
         return czytelnicy;
     }
+    
+    public List<Czytelnik> selectCzytelnicyByName(String name) {
+        List<Czytelnik> czytelnicyByName = new LinkedList<Czytelnik>();
+        String szukane=name, select; 
+        select =("SELECT * FROM czytelnicy where imie='"+szukane+"'"); 
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            int id;
+            String imie, nazwisko, pesel;
+            while(result.next()) {
+                id = result.getInt("id_czytelnika");
+                imie = result.getString("imie");
+                nazwisko = result.getString("nazwisko");
+                pesel = result.getString("pesel");
+                czytelnicyByName.add(new Czytelnik(id, imie, nazwisko, pesel));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return czytelnicyByName;
+    }
+    
+    public boolean updateCzytelnikImie(String imie, int id)  {
+        String komenda;
+        komenda = "UPDATE czytelnicy SET imie='"+imie+"' WHERE id_czytelnika="+id;
+        System.out.println(komenda);
+        try {
+            stat.executeUpdate(komenda);
+        } catch (SQLException e) {
+            System.err.println("Blad przy zmianie w tabeli");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean updateCzytelnik(String id, String wartosc, int column)  {
+        System.out.println("WYWOLANIE UPDATE");
+        String komenda;
+        if (column==1) 
+        komenda = "UPDATE czytelnicy SET imie='"+wartosc+"' WHERE id_czytelnika="+id;
+        else if (column==2)
+        komenda = "UPDATE czytelnicy SET nazwisko='"+wartosc+"' WHERE id_czytelnika="+id; 
+        else if (column==3) komenda = "UPDATE czytelnicy SET pesel='"+wartosc+"' WHERE id_czytelnika="+id; 
+        else return false;
+        System.out.println(komenda);
+        try {
+            stat.executeUpdate(komenda);
+        } catch (SQLException e) {
+            System.err.println("Blad przy zmianie w tabeli");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
 
     public List<Ksiazka> selectKsiazki() {
         List<Ksiazka> ksiazki = new LinkedList<Ksiazka>();
@@ -139,6 +200,14 @@ public class Biblioteka {
         }
         return ksiazki;
     }
+    
+     public void CzytelnikImie (String imie, List<Czytelnik> czytelnicy){
+        for(Czytelnik c: czytelnicy)
+            if (c.getImie().equalsIgnoreCase(imie))  
+                System.out.println(c);
+    }
+     
+     
 
     public void closeConnection() {
         try {
