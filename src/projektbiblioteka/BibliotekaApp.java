@@ -200,6 +200,8 @@ public class BibliotekaApp extends javax.swing.JFrame {
         /* Create and display the form */
         Biblioteka b = new Biblioteka();
         
+        b.insertCzytelnik("Bogdan", "Grzą", "82568598755");
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new BibliotekaApp().setVisible(true);
@@ -246,8 +248,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
         //    if (c.getImie().equalsIgnoreCase("karol"))    
               // System.out.println(c);
 
-          String dotebelki = czytelnicy.get(1).getImie();
-          System.out.println(dotebelki);
+
         b.closeConnection(); 
         
     }
