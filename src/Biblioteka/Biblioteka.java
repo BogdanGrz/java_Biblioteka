@@ -13,6 +13,8 @@ import model.Czytelnik;
 import model.Ksiazka;
 import model.Wypozyczenie;
 import model.jointest;
+import model.Adresy;
+import model.Ulice;
 
 public class Biblioteka {
 
@@ -45,10 +47,17 @@ public class Biblioteka {
         String createCzytelnicy = "CREATE TABLE IF NOT EXISTS czytelnicy (id_czytelnika INTEGER(8) PRIMARY KEY AUTOINCREMENT, imie varchar(255), nazwisko varchar(255), pesel int)";
         String createKsiazki = "CREATE TABLE IF NOT EXISTS ksiazki (id_ksiazki INTEGER PRIMARY KEY AUTOINCREMENT, tytul varchar(255), autor varchar(255), gatunek varchar(255))";
         String createWypozyczenia = "CREATE TABLE IF NOT EXISTS wypozyczenia (id_wypozycz INTEGER PRIMARY KEY AUTOINCREMENT, id_czytelnika int, id_ksiazki int)";
+        String createUlice = "CREATE TABLE IF NOT EXISTS ulice (id_ulice INTEGER PRIMARY KEY AUTOINCREMENT, ulica varchar(255), numer varchar(255))";
+        String createMiasta = "CREATE TABLE IF NOT EXISTS miasta (id_miasta INTEGER PRIMARY KEY AUTOINCREMENT, miasto varchar(255), kod varchar(6))";
+        String createAdresy = "CREATE TABLE IF NOT EXISTS adresy (id_adresy INTEGER PRIMARY KEY AUTOINCREMENT, ulica_id INTEGER, miasto_id INTEGER)";
+        
         try {
             stat.execute(createCzytelnicy);
             stat.execute(createKsiazki);
             stat.execute(createWypozyczenia);
+            stat.execute(createUlice);
+            stat.execute(createMiasta);
+            stat.execute(createAdresy);
         } catch (SQLException e) {
             System.err.println("Blad przy tworzeniu tabeli");
             e.printStackTrace();
@@ -101,6 +110,51 @@ public class Biblioteka {
         }
         return true;
     }
+    
+     public boolean insertUlica(String ulica, String numer) {
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into adresy values (NULL, ?, ?);");
+            prepStmt.setString(1, ulica);
+            prepStmt.setString(2, numer);
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu ulicy");
+            return false;
+        }
+        return true;
+    }
+     
+      public boolean insertMiasto(String miasto, String kod) {
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into adresy values (NULL, ?, ?);");
+            prepStmt.setString(1, miasto);
+            prepStmt.setString(2, kod);
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu miasta");
+            return false;
+        }
+        return true;
+    }
+      
+      public boolean insertAdres(int ulica_id, int miasto_id) {
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into adresy values (NULL, ?, ?);");
+            prepStmt.setInt(1, ulica_id);
+            prepStmt.setInt(2, miasto_id);
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu adresu");
+            return false;
+        }
+        return true;
+    }
+    
+    
+    
 
     public List<Czytelnik> selectCzytelnicy() {
         List<Czytelnik> czytelnicy = new LinkedList<Czytelnik>();

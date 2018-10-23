@@ -5,6 +5,14 @@ public class Czytelnik {
     private String imie;
     private String nazwisko;
     private String pesel;
+    private String dob;
+    private String email;
+    private String login;
+    private String haslo;
+    private String telefon;
+    private double zadluzenie;
+    private int adres_adresy;
+    
 
     public int getId() {
         return id;
