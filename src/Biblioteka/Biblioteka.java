@@ -6,14 +6,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import model.Czytelnik;
 import model.Ksiazka;
 import model.Wypozyczenie;
-import model.jointest;
-import model.Adresy;
+import model.Miasta;
 import model.Ulice;
 
 public class Biblioteka {
@@ -44,12 +44,11 @@ public class Biblioteka {
     }
 
     public boolean createTables()  {
-        String createCzytelnicy = "CREATE TABLE IF NOT EXISTS czytelnicy (id_czytelnika INTEGER(8) PRIMARY KEY AUTOINCREMENT, imie varchar(255), nazwisko varchar(255), pesel int)";
+        String createCzytelnicy = "CREATE TABLE IF NOT EXISTS czytelnicy (id_czytelnika INTEGER PRIMARY KEY AUTOINCREMENT, imie varchar ( 255 ) NOT NULL, nazwisko varchar ( 255 ) NOT NULL, pesel varchar ( 11 ) NOT NULL UNIQUE, DOB varchar(12) NOT NULL, email varchar ( 40 ) UNIQUE, username varchar ( 40 ) UNIQUE, password varchar NOT NULL, zadluzenie REAL DEFAULT 0, miasto_id INTEGER, ulica_id INTEGER, numer_domu varchar (10), telefon varchar (20))";
         String createKsiazki = "CREATE TABLE IF NOT EXISTS ksiazki (id_ksiazki INTEGER PRIMARY KEY AUTOINCREMENT, tytul varchar(255), autor varchar(255), gatunek varchar(255))";
         String createWypozyczenia = "CREATE TABLE IF NOT EXISTS wypozyczenia (id_wypozycz INTEGER PRIMARY KEY AUTOINCREMENT, id_czytelnika int, id_ksiazki int)";
         String createUlice = "CREATE TABLE IF NOT EXISTS ulice (id_ulice INTEGER PRIMARY KEY AUTOINCREMENT, ulica varchar(255), numer varchar(255))";
         String createMiasta = "CREATE TABLE IF NOT EXISTS miasta (id_miasta INTEGER PRIMARY KEY AUTOINCREMENT, miasto varchar(255), kod varchar(6))";
-        String createAdresy = "CREATE TABLE IF NOT EXISTS adresy (id_adresy INTEGER PRIMARY KEY AUTOINCREMENT, ulica_id INTEGER, miasto_id INTEGER)";
         
         try {
             stat.execute(createCzytelnicy);
@@ -57,7 +56,6 @@ public class Biblioteka {
             stat.execute(createWypozyczenia);
             stat.execute(createUlice);
             stat.execute(createMiasta);
-            stat.execute(createAdresy);
         } catch (SQLException e) {
             System.err.println("Blad przy tworzeniu tabeli");
             e.printStackTrace();
@@ -139,19 +137,7 @@ public class Biblioteka {
         return true;
     }
       
-      public boolean insertAdres(int ulica_id, int miasto_id) {
-        try {
-            PreparedStatement prepStmt = conn.prepareStatement(
-                    "insert into adresy values (NULL, ?, ?);");
-            prepStmt.setInt(1, ulica_id);
-            prepStmt.setInt(2, miasto_id);
-            prepStmt.execute();
-        } catch (SQLException e) {
-            System.err.println("Blad przy dodawaniu adresu");
-            return false;
-        }
-        return true;
-    }
+
     
     
     
@@ -178,6 +164,93 @@ public class Biblioteka {
         }
         return czytelnicy;
     }
+    public String[][] selectCzytelnicyToArray() {
+        String select="SELECT * FROM czytelnicy";
+        List lista1 = new ArrayList();
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                lista1.add(result.getInt("id_czytelnika")); //0
+                lista1.add(result.getString("imie"));       //1
+                lista1.add(result.getString("nazwisko"));   //2
+                lista1.add(result.getString("pesel"));      //3
+                lista1.add(result.getString("DOB"));        //4
+                lista1.add(result.getString("username"));   //6
+                lista1.add(result.getString("email"));      //6
+                lista1.add(result.getString("password"));   //7
+                lista1.add(result.getFloat("zadluzenie"));  //8
+                lista1.add(result.getInt("miasto_id"));     //9
+                lista1.add(result.getInt("ulica_id"));      //10
+                lista1.add(result.getString("numer_domu")); //11
+                lista1.add(result.getString("telefon"));    //12   
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        int rozmiar=lista1.size();
+         String[][] tmp = new String[rozmiar/13][9];
+         for (int i=0, j=0; i<(rozmiar/13); i++, j+=13)
+         {
+             tmp[i][0]=String.format("%06d", lista1.get(j));
+             tmp[i][1]=(String)lista1.get(j+1);
+             tmp[i][2]=(String)lista1.get(j+2);
+             tmp[i][3]=(String)lista1.get(j+3);
+             tmp[i][4]=(String)lista1.get(j+4);
+             tmp[i][5]=(String)lista1.get(j+5);
+             tmp[i][6]=(String)lista1.get(j+6);
+             String tempo=(String.format("%d", lista1.get(j+10))+" "+String.format("%d", lista1.get(j+9))+" "+(String)lista1.get(j+11));
+             tmp[i][7]=tempo;
+             tmp[i][8]=(String)lista1.get(j+12);
+         }
+        return tmp;
+    }
+    
+    public String[][] selectCzytelnicyZAdresem() {
+        String select="SELECT czytelnicy.id_czytelnika, czytelnicy.imie, czytelnicy.nazwisko, czytelnicy.pesel, czytelnicy.DOB, czytelnicy.username, czytelnicy.email, ulice.ulica, czytelnicy.numer_domu, miasta.miasto, miasta.kod, czytelnicy.telefon FROM czytelnicy INNER JOIN ulice ON ulice.id_ulice = czytelnicy.ulica_id INNER JOIN miasta ON miasta.id_miasta = czytelnicy.miasto_id;";
+        List lista1 = new ArrayList();
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                lista1.add(result.getInt("id_czytelnika")); //0
+                lista1.add(result.getString("imie"));       //1
+                lista1.add(result.getString("nazwisko"));   //2
+                lista1.add(result.getString("pesel"));      //3
+                lista1.add(result.getString("DOB"));        //4
+                lista1.add(result.getString("username"));   //5
+                lista1.add(result.getString("email"));      //6
+                lista1.add(result.getString("ulica"));     //7
+                lista1.add(result.getString("numer_domu"));      //8
+                lista1.add(result.getString("miasto")); //9
+                lista1.add(result.getString("kod")); //10
+                lista1.add(result.getString("telefon"));    //11   
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        int rozmiar=lista1.size();
+        System.out.println(rozmiar);
+         String[][] tmp = new String[rozmiar/12][9];
+         for (int i=0, j=0; i<(rozmiar/12); i++, j+=12)
+         {
+             System.out.println(i+" ");
+             tmp[i][0]=String.format("%06d", lista1.get(j));
+             tmp[i][1]=(String)lista1.get(j+1);
+             tmp[i][2]=(String)lista1.get(j+2);
+             tmp[i][3]=(String)lista1.get(j+3);
+             tmp[i][4]=(String)lista1.get(j+4);
+             tmp[i][5]=(String)lista1.get(j+5);
+             tmp[i][6]=(String)lista1.get(j+6);
+             String tempo=lista1.get(j+7)+"  \t"+lista1.get(j+8)+" - "+lista1.get(j+9)+"  \t"+lista1.get(j+10);
+             tmp[i][7]=tempo;
+             tmp[i][8]=(String)lista1.get(j+11);
+         }
+        return tmp;
+    }
+    
     
     public List<Czytelnik> selectCzytelnicyByName(String name) {
         List<Czytelnik> czytelnicyByName = new LinkedList<Czytelnik>();
@@ -199,6 +272,7 @@ public class Biblioteka {
             e.printStackTrace();
             return null;
         }
+        
         return czytelnicyByName;
     }
     
@@ -269,33 +343,6 @@ public class Biblioteka {
             return null;
         }
         return ksiazki;
-    }
-    
-     public List <jointest> selectJoin() {
-        List<jointest> selectJoin = new LinkedList<jointest>();
-        try {
-            
-            ResultSet result = stat.executeQuery("SELECT tytul, id_czytelnika, wy.id_ksiazki FROM ksiazki ks INNER JOIN wypozyczenia wy on ks.id_ksiazki = wy.id_ksiazki");
-            int idcz, idks;
-            String tytul, czyt;
-            //int rowCount = result.last() ? result.getRow() : 0;
-            //result.beforeFirst();
-           // System.out.println(rowCount);
-            while(result.next()) {
-                idks = result.getInt("id_ksiazki");
-                tytul = result.getString("tytul");
-                idcz = result.getInt("id_czytelnika");
-                
-                //autor = result.getString("autor");
-                //gatunek = result.getString("gatunek");
-                selectJoin.add(new jointest(idks, idcz, tytul));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-        
-        return selectJoin;
     }
     
      public void CzytelnikImie (String imie, List<Czytelnik> czytelnicy){

@@ -12,24 +12,30 @@ package projektbiblioteka;
 import model.Czytelnik;
 import model.Ksiazka;
 import model.Wypozyczenie;
+import model.Miasta;
+import model.MyTableModel;
 import Biblioteka.Biblioteka;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import static java.util.Collections.list;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.RowFilter;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.*;
-import model.jointest;
+import static model.Password.*;
 
 public class BibliotekaApp extends javax.swing.JFrame {
     
     Biblioteka b = new Biblioteka();
-    
+   
     
   
     DefaultTableModel model = new DefaultTableModel(new Object[][] {},
-      new Object[] { "ID", "Imie","nazwisko", "pesel" });
+      new Object[] { "ID", "Imie","Nazwisko", "Pesel", "DOB", "Uźytkownik", "email", "Adres", "Telefon"});
+
     
     DefaultComboBoxModel modelbox = new DefaultComboBoxModel<>(new String[] {"Inne" });
  
@@ -40,10 +46,9 @@ public class BibliotekaApp extends javax.swing.JFrame {
          modelbox.addElement(czytelnicy.get(0).getImie()+"  "+czytelnicy.get(0).getNazwisko());
          modelbox.addElement(czytelnicy.get(1).getImie()+"  "+czytelnicy.get(1).getNazwisko());
          modelbox.addElement(czytelnicy.get(2).getImie()+"  "+czytelnicy.get(2).getNazwisko());
-    
     }
     
-    
+    /*
     public String[][] ListToArr(List<Czytelnik> czytelnicy) {
         int dl= czytelnicy.size();
         
@@ -58,21 +63,12 @@ public class BibliotekaApp extends javax.swing.JFrame {
         }
         return czyt;
     }
+    */
     
-    
-    void SelectCzytelnicyToTable() {
-         List<Czytelnik> czytelnicy;
-         czytelnicy=b.selectCzytelnicy();
-         
-         //jTable2.getModel().setValueAt("test", 1, 1);
-         String [][] czyt = new String[czytelnicy.size()][4];
-         czyt = ListToArr(czytelnicy);
+    void SelectCzytelnicyToTable(String[][] tab) {
          model.setRowCount(0);
-         for (int i=0; i<czyt.length; i++)
-           model.addRow(czyt[i]);
-         for(Czytelnik c: czytelnicy) 
-           System.out.println(c);
-         System.out.println("----------------------");
+         for (int i=0; i<tab.length; i++)
+           model.addRow(tab[i]);
     }
     
     
@@ -120,9 +116,17 @@ public class BibliotekaApp extends javax.swing.JFrame {
         jScrollPane3.setPreferredSize(new java.awt.Dimension(820, 320));
 
         TabelaCzytelnicy.setAutoCreateRowSorter(true);
-        TabelaCzytelnicy.getColumnModel().getColumn(0).setPreferredWidth(10);
+        TabelaCzytelnicy.getColumnModel().getColumn(0).setPreferredWidth(60);
+        TabelaCzytelnicy.getColumnModel().getColumn(1).setPreferredWidth(100);
+        TabelaCzytelnicy.getColumnModel().getColumn(2).setPreferredWidth(110);
+        TabelaCzytelnicy.getColumnModel().getColumn(3).setPreferredWidth(85);
+        TabelaCzytelnicy.getColumnModel().getColumn(4).setPreferredWidth(80);
+        TabelaCzytelnicy.getColumnModel().getColumn(5).setPreferredWidth(100);
+        TabelaCzytelnicy.getColumnModel().getColumn(6).setPreferredWidth(110);
+        TabelaCzytelnicy.getColumnModel().getColumn(7).setPreferredWidth(200);
         TabelaCzytelnicy.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         TabelaCzytelnicy.setModel(model);
+        TabelaCzytelnicy.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
         TabelaCzytelnicy.setCellSelectionEnabled(true);
         TabelaCzytelnicy.setMaximumSize(new java.awt.Dimension(800, 300));
         TabelaCzytelnicy.setMinimumSize(new java.awt.Dimension(800, 300));
@@ -187,6 +191,11 @@ public class BibliotekaApp extends javax.swing.JFrame {
         });
 
         jTextField1.setText("jTextField1");
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
 
         jTextField2.setText("jTextField2");
 
@@ -205,7 +214,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 .addComponent(IDfield, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 319, Short.MAX_VALUE)
                 .addComponent(jButton5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton6)
@@ -224,7 +233,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
         ZakladkaCzytelnicyLayout.setVerticalGroup(
             ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ZakladkaCzytelnicyLayout.createSequentialGroup()
-                .addContainerGap(17, Short.MAX_VALUE)
+                .addContainerGap(39, Short.MAX_VALUE)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -266,7 +275,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
         ZakladkaKsiazkiLayout.setHorizontalGroup(
             ZakladkaKsiazkiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ZakladkaKsiazkiLayout.createSequentialGroup()
-                .addContainerGap(154, Short.MAX_VALUE)
+                .addContainerGap(392, Short.MAX_VALUE)
                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(76, 76, 76)
                 .addComponent(jButton7)
@@ -279,7 +288,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 .addGroup(ZakladkaKsiazkiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton7)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(327, Short.MAX_VALUE))
+                .addContainerGap(349, Short.MAX_VALUE))
         );
 
         zakladki.addTab("Książki", ZakladkaKsiazki);
@@ -290,14 +299,14 @@ public class BibliotekaApp extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(zakladki)
-                .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(100, 100, 100))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(zakladki, javax.swing.GroupLayout.PREFERRED_SIZE, 1018, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -305,8 +314,8 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addComponent(zakladki)
-                .addGap(0, 0, 0))
+                .addComponent(zakladki, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         zakladki.getAccessibleContext().setAccessibleName("Czytelnicy");
@@ -339,7 +348,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(13, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -352,7 +361,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         pack();
@@ -360,13 +369,13 @@ public class BibliotekaApp extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
        
-       SelectCzytelnicyToTable();
+       SelectCzytelnicyToTable(b.selectCzytelnicyZAdresem());
        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         b.updateCzytelnikImie("AHMED", 4);
-        SelectCzytelnicyToTable();
+        //SelectCzytelnicyToTable();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void TabelaCzytelnicyKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TabelaCzytelnicyKeyPressed
@@ -406,10 +415,10 @@ public class BibliotekaApp extends javax.swing.JFrame {
        for(Ksiazka k: ksiazki)
         System.out.println(k);
        
-       List<jointest> join = b.selectJoin();
-        System.out.println("Join");
-       for(jointest k: join)
-        System.out.println(k);
+     //  List<jointest> join = b.selectJoin();
+      // System.out.println("Join");
+      // for(jointest k: join)
+      //  System.out.println(k);
        
     }//GEN-LAST:event_jButton6ActionPerformed
 
@@ -433,6 +442,10 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         listadd();
     }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -512,6 +525,23 @@ public class BibliotekaApp extends javax.swing.JFrame {
         //    if (c.getImie().equalsIgnoreCase("karol"))    
               // System.out.println(c);
 
+              String haslo = "Mlotek66";
+              String hash = "";
+              hash=hashPassword(haslo);
+              System.out.println(haslo);
+              System.out.println(hash);
+              System.out.println(checkPassword("Mlotek66","$2a$12$P65cxIwXnqiQiXpuhg9EnOURw4IFeDuLvhD94ObqStAouaC4UcBJi"));
+              
+        String jeden = "1";
+        String dwa = "dwanapis";
+        List <String>lista1 = new ArrayList();
+        lista1.add(jeden);
+        lista1.add(dwa);
+        
+        System.out.println(lista1);
+    
+       
+              
 
         b.closeConnection(); 
         
