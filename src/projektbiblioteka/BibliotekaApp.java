@@ -9,6 +9,7 @@ package projektbiblioteka;
  *
  * @author B.Grzadzielewski
  */
+import java.sql.ResultSet;
 import model.Czytelnik;
 import model.Ksiazka;
 import model.Wypozyczenie;
@@ -16,9 +17,15 @@ import model.Miasta;
 import model.MyTableModel;
 import Biblioteka.Biblioteka;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import static java.util.Collections.list;
 import java.util.List;
+import java.util.Scanner;
+import static javafx.beans.binding.Bindings.select;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.RowFilter;
 import javax.swing.event.TableModelEvent;
@@ -29,13 +36,28 @@ import static model.Password.*;
 
 public class BibliotekaApp extends javax.swing.JFrame {
     
+    File plik = new File("lang.txt");
     Biblioteka b = new Biblioteka();
+    static String [] language = new String[] {"polska", "Córdoba", "La Plata"}; 
+    DefaultTableModel model = new DefaultTableModel(new Object[][] {},
+     new Object[] { language[0], "Imie","Nazwisko", "Pesel", "DOB", "Uźytkownik", "email", "Adres", "Telefon"});
+
    
     
-  
-    DefaultTableModel model = new DefaultTableModel(new Object[][] {},
-      new Object[] { "ID", "Imie","Nazwisko", "Pesel", "DOB", "Uźytkownik", "email", "Adres", "Telefon"});
-
+     
+        static String [] language_polski = {"polska", "Córdoba", "La Plata"};
+        static String [] language_angielski = {"anglia", "Córdoba", "La Plata"};
+   
+    static void jezyk() throws FileNotFoundException{
+        Scanner odczyt = new Scanner(new File("lang.txt"));
+        String text = "pol";
+        text = odczyt.nextLine();
+        System.out.println(text);
+        Arrays.fill (language, null);
+        if (text.equals("ang")) language = language_angielski.clone();
+        else language = language_polski.clone();
+        System.out.println(language[0]);
+    }    
     
     DefaultComboBoxModel modelbox = new DefaultComboBoxModel<>(new String[] {"Inne" });
  
@@ -85,6 +107,8 @@ public class BibliotekaApp extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        oknotest = new javax.swing.JFrame();
+        jLabel2 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         zakladki = new javax.swing.JTabbedPane();
         ZakladkaCzytelnicy = new javax.swing.JPanel();
@@ -99,6 +123,10 @@ public class BibliotekaApp extends javax.swing.JFrame {
         jButton6 = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
         jTextField2 = new javax.swing.JTextField();
+        filtr_ID = new javax.swing.JTextField();
+        filtr_ID1 = new javax.swing.JTextField();
+        jButton8 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
         ZakladkaKsiazki = new javax.swing.JPanel();
         jComboBox1 = new javax.swing.JComboBox<>(modelbox);
         jButton7 = new javax.swing.JButton();
@@ -108,12 +136,42 @@ public class BibliotekaApp extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        jLabel2.setText(language[0]);
 
+        javax.swing.GroupLayout oknotestLayout = new javax.swing.GroupLayout(oknotest.getContentPane());
+        oknotest.getContentPane().setLayout(oknotestLayout);
+        oknotestLayout.setHorizontalGroup(
+            oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(oknotestLayout.createSequentialGroup()
+                .addGap(115, 115, 115)
+                .addComponent(jLabel2)
+                .addContainerGap(219, Short.MAX_VALUE))
+        );
+        oknotestLayout.setVerticalGroup(
+            oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(oknotestLayout.createSequentialGroup()
+                .addGap(87, 87, 87)
+                .addComponent(jLabel2)
+                .addContainerGap(199, Short.MAX_VALUE))
+        );
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(204, 255, 204));
+
+        jPanel1.setBackground(new java.awt.Color(204, 255, 204));
+
+        zakladki.setBackground(new java.awt.Color(204, 255, 204));
         zakladki.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        ZakladkaCzytelnicy.setBackground(new java.awt.Color(255, 255, 204));
+        ZakladkaCzytelnicy.setAlignmentX(0.0F);
+        ZakladkaCzytelnicy.setAlignmentY(0.0F);
+
+        jScrollPane3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jScrollPane3.setMaximumSize(new java.awt.Dimension(820, 320));
         jScrollPane3.setPreferredSize(new java.awt.Dimension(820, 320));
+        jScrollPane3.setVerticalScrollBarPolicy(jScrollPane3.VERTICAL_SCROLLBAR_ALWAYS);
+        //jScrollPane3.setVerticalScrollBar(verticalScrollBar);
 
         TabelaCzytelnicy.setAutoCreateRowSorter(true);
         TabelaCzytelnicy.getColumnModel().getColumn(0).setPreferredWidth(60);
@@ -125,12 +183,15 @@ public class BibliotekaApp extends javax.swing.JFrame {
         TabelaCzytelnicy.getColumnModel().getColumn(6).setPreferredWidth(110);
         TabelaCzytelnicy.getColumnModel().getColumn(7).setPreferredWidth(200);
         TabelaCzytelnicy.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        TabelaCzytelnicy.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         TabelaCzytelnicy.setModel(model);
         TabelaCzytelnicy.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
-        TabelaCzytelnicy.setCellSelectionEnabled(true);
         TabelaCzytelnicy.setMaximumSize(new java.awt.Dimension(800, 300));
         TabelaCzytelnicy.setMinimumSize(new java.awt.Dimension(800, 300));
         TabelaCzytelnicy.setName(""); // NOI18N
+        TabelaCzytelnicy.setRowHeight(24);
+        TabelaCzytelnicy.getTableHeader().setReorderingAllowed(false);
+        TabelaCzytelnicy.getTableHeader().setResizingAllowed(false);
         TabelaCzytelnicy.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 TabelaCzytelnicyMousePressed(evt);
@@ -199,6 +260,50 @@ public class BibliotekaApp extends javax.swing.JFrame {
 
         jTextField2.setText("jTextField2");
 
+        filtr_ID.setText("ID czyt");
+        filtr_ID.setAlignmentX(0.0F);
+        filtr_ID.setAlignmentY(0.0F);
+        filtr_ID.setAutoscrolls(false);
+        filtr_ID.setMargin(new java.awt.Insets(2, 0, 0, 0));
+        filtr_ID.setMaximumSize(new java.awt.Dimension(70, 25));
+        filtr_ID.setMinimumSize(new java.awt.Dimension(70, 25));
+        filtr_ID.setName(""); // NOI18N
+        filtr_ID.setPreferredSize(new java.awt.Dimension(70, 30));
+        filtr_ID.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                filtr_IDFocusGained(evt);
+            }
+        });
+        filtr_ID.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filtr_IDActionPerformed(evt);
+            }
+        });
+
+        filtr_ID1.setText("imie");
+        filtr_ID1.setAlignmentX(0.0F);
+        filtr_ID1.setAlignmentY(0.0F);
+        filtr_ID1.setAutoscrolls(false);
+        filtr_ID1.setMargin(new java.awt.Insets(2, 0, 0, 0));
+        filtr_ID1.setMaximumSize(new java.awt.Dimension(70, 25));
+        filtr_ID1.setMinimumSize(new java.awt.Dimension(70, 25));
+        filtr_ID1.setName(""); // NOI18N
+        filtr_ID1.setPreferredSize(new java.awt.Dimension(70, 30));
+
+        jButton8.setText("jButton8");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
+        jButton9.setText("jButton9");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout ZakladkaCzytelnicyLayout = new javax.swing.GroupLayout(ZakladkaCzytelnicy);
         ZakladkaCzytelnicy.setLayout(ZakladkaCzytelnicyLayout);
         ZakladkaCzytelnicyLayout.setHorizontalGroup(
@@ -219,26 +324,47 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton6)
                 .addGap(56, 56, 56))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ZakladkaCzytelnicyLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addContainerGap())
             .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
-                    .addComponent(jTextField1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(74, 74, 74)
+                        .addComponent(jButton8)
+                        .addGap(30, 30, 30)
+                        .addComponent(jButton9))
+                    .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
+                        .addComponent(filtr_ID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(filtr_ID1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(403, Short.MAX_VALUE))
+            .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 999, Short.MAX_VALUE)
+                .addContainerGap())
         );
         ZakladkaCzytelnicyLayout.setVerticalGroup(
             ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ZakladkaCzytelnicyLayout.createSequentialGroup()
-                .addContainerGap(39, Short.MAX_VALUE)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
+                        .addContainerGap(32, Short.MAX_VALUE)
+                        .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(40, 40, 40))
+                    .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton8)
+                            .addComponent(jButton9))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(filtr_ID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(filtr_ID1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
@@ -344,11 +470,11 @@ public class BibliotekaApp extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(13, Short.MAX_VALUE))
+                        .addContainerGap(23, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -357,11 +483,11 @@ public class BibliotekaApp extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(0, 0, 0)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         pack();
@@ -447,10 +573,28 @@ public class BibliotekaApp extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
+    private void filtr_IDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtr_IDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_filtr_IDActionPerformed
+
+    private void filtr_IDFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_filtr_IDFocusGained
+        filtr_ID.selectAll();
+    }//GEN-LAST:event_filtr_IDFocusGained
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        //Arrays.fill (language, null);
+        //language = language_angielski.clone();
+        //System.out.println(language[0]);
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        oknotest.setVisible(rootPaneCheckingEnabled);
+    }//GEN-LAST:event_jButton9ActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws FileNotFoundException {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -475,7 +619,15 @@ public class BibliotekaApp extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        Biblioteka b = new Biblioteka();
+        //Biblioteka b = new Biblioteka();
+        
+         
+        
+        jezyk();
+      
+        
+        // DefaultTableModel model = new DefaultTableModel(new Object[][] {},
+        // new Object[] { language[0], "Imie","Nazwisko", "Pesel", "DOB", "Uźytkownik", "email", "Adres", "Telefon"});
         
         
         
@@ -484,29 +636,29 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 new BibliotekaApp().setVisible(true);
             }
         });
-       List<Czytelnik> czytelnicy;
-        czytelnicy = b.selectCzytelnicy();
-        System.out.println("Wyswietl liste 'czytelnicy'");
-         for(Czytelnik c: czytelnicy)
+       //List<Czytelnik> czytelnicy;
+       // czytelnicy = b.selectCzytelnicy();
+        //System.out.println("Wyswietl liste 'czytelnicy'");
+        // for(Czytelnik c: czytelnicy)
         //    if (c.getImie().equalsIgnoreCase("karol"))    
-               System.out.println(c);
-         System.out.println("----------------------");
-         int rozmiar=czytelnicy.size();
+            //   System.out.println(c);
+       //  System.out.println("----------------------");
+        // int rozmiar=czytelnicy.size();
        // for (int i=0; i<rozmiar; i++)
            //czytelnicy.remove(0);
         
-         for(Czytelnik c: czytelnicy)
+         //for(Czytelnik c: czytelnicy)
         //    if (c.getImie().equalsIgnoreCase("karol"))    
-               System.out.println(c);
+            //   System.out.println(c);
          
-          System.out.println("----------------------");
+         // System.out.println("----------------------");
                   
         
         
         
-        System.out.println("----------------------");
-        b.CzytelnikImie("Karol", czytelnicy);
-        System.out.println("----------------------");
+      //  System.out.println("----------------------");
+       // b.CzytelnikImie("Karol", czytelnicy);
+       // System.out.println("----------------------");
         
         //for(Czytelnik c: czytelnicyImie)
         //    if (c.getImie().equalsIgnoreCase("karol"))    
@@ -518,9 +670,9 @@ public class BibliotekaApp extends javax.swing.JFrame {
         
         
         //System.out.println(czytelnicy.get(0).getImie());
-        List<Czytelnik> czytelnicyByName;
-        czytelnicyByName=b.selectCzytelnicyByName("Karolina");
-        System.out.println("Wyswietl liste 'czytelnicyByName'");
+      //  List<Czytelnik> czytelnicyByName;
+       // czytelnicyByName=b.selectCzytelnicyByName("Karolina");
+       // System.out.println("Wyswietl liste 'czytelnicyByName'");
         //for(Czytelnik c: czytelnicyByName)
         //    if (c.getImie().equalsIgnoreCase("karol"))    
               // System.out.println(c);
@@ -543,7 +695,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
        
               
 
-        b.closeConnection(); 
+       // b.closeConnection(); 
         
     }
 
@@ -552,6 +704,8 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JTable TabelaCzytelnicy;
     private javax.swing.JPanel ZakladkaCzytelnicy;
     private javax.swing.JPanel ZakladkaKsiazki;
+    private javax.swing.JTextField filtr_ID;
+    private javax.swing.JTextField filtr_ID1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -559,8 +713,11 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -569,6 +726,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JFrame oknotest;
     private javax.swing.JTabbedPane zakladki;
     // End of variables declaration//GEN-END:variables
 }
