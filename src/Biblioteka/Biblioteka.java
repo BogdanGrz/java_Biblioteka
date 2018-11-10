@@ -9,7 +9,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
+import model.SendEmail;
 import model.Czytelnik;
 import model.Ksiazka;
 import model.Wypozyczenie;

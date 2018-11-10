@@ -15,6 +15,7 @@ import model.Ksiazka;
 import model.Wypozyczenie;
 import model.Miasta;
 import model.MyTableModel;
+import model.SendEmail;
 import Biblioteka.Biblioteka;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -33,6 +34,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.*;
 import static model.Password.*;
+import static model.SendEmail.*;
 
 public class BibliotekaApp extends javax.swing.JFrame {
     
@@ -130,6 +132,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
         ZakladkaKsiazki = new javax.swing.JPanel();
         jComboBox1 = new javax.swing.JComboBox<>(modelbox);
         jButton7 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -396,6 +399,14 @@ public class BibliotekaApp extends javax.swing.JFrame {
             }
         });
 
+        jButton10.setText("wyslij maila");
+        jButton10.setToolTipText("");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout ZakladkaKsiazkiLayout = new javax.swing.GroupLayout(ZakladkaKsiazki);
         ZakladkaKsiazki.setLayout(ZakladkaKsiazkiLayout);
         ZakladkaKsiazkiLayout.setHorizontalGroup(
@@ -406,6 +417,10 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 .addGap(76, 76, 76)
                 .addComponent(jButton7)
                 .addGap(337, 337, 337))
+            .addGroup(ZakladkaKsiazkiLayout.createSequentialGroup()
+                .addGap(361, 361, 361)
+                .addComponent(jButton10)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         ZakladkaKsiazkiLayout.setVerticalGroup(
             ZakladkaKsiazkiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -414,7 +429,9 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 .addGroup(ZakladkaKsiazkiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton7)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(349, Short.MAX_VALUE))
+                .addGap(68, 68, 68)
+                .addComponent(jButton10)
+                .addContainerGap(258, Short.MAX_VALUE))
         );
 
         zakladki.addTab("Książki", ZakladkaKsiazki);
@@ -591,6 +608,10 @@ public class BibliotekaApp extends javax.swing.JFrame {
         oknotest.setVisible(rootPaneCheckingEnabled);
     }//GEN-LAST:event_jButton9ActionPerformed
 
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        email();
+    }//GEN-LAST:event_jButton10ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -676,7 +697,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
         //for(Czytelnik c: czytelnicyByName)
         //    if (c.getImie().equalsIgnoreCase("karol"))    
               // System.out.println(c);
-
+              
               String haslo = "Mlotek66";
               String hash = "";
               hash=hashPassword(haslo);
@@ -707,6 +728,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JTextField filtr_ID;
     private javax.swing.JTextField filtr_ID1;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
