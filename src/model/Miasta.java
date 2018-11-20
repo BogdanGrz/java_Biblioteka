@@ -18,7 +18,7 @@ public class Miasta {
         this.miasto = miasto;
     }
     public String getKod() {
-        return miasto;
+        return kod;
     }
     public void setKod(String kod) {
         this.kod = kod;

@@ -17,24 +17,38 @@ import model.Miasta;
 import model.MyTableModel;
 import model.SendEmail;
 import Biblioteka.Biblioteka;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
+import java.awt.font.TextAttribute;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import static java.util.Collections.list;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static javafx.beans.binding.Bindings.select;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.RowFilter;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.*;
 import static model.Password.*;
+import model.PasswordGenerator;
 import static model.SendEmail.*;
+import static model.PasswordGenerator.*;
+import model.Ulice;
 
 public class BibliotekaApp extends javax.swing.JFrame {
     
@@ -44,7 +58,12 @@ public class BibliotekaApp extends javax.swing.JFrame {
     DefaultTableModel model = new DefaultTableModel(new Object[][] {},
      new Object[] { language[0], "Imie","Nazwisko", "Pesel", "DOB", "Uźytkownik", "email", "Adres", "Telefon"});
 
-   
+   PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
+        .useDigits(true)
+        .useLower(true)
+        .useUpper(true)
+        .usePunctuation(false)
+        .build();
     
      
         static String [] language_polski = {"polska", "Córdoba", "La Plata"};
@@ -62,6 +81,8 @@ public class BibliotekaApp extends javax.swing.JFrame {
     }    
     
     DefaultComboBoxModel modelbox = new DefaultComboBoxModel<>(new String[] {"Inne" });
+    DefaultComboBoxModel modelboxmiasta = new DefaultComboBoxModel<>(new String[] {"Inne" });
+    DefaultComboBoxModel modelboxulice = new DefaultComboBoxModel<>(new String[] {"Inna" });
  
     
     public void listadd() {
@@ -70,6 +91,22 @@ public class BibliotekaApp extends javax.swing.JFrame {
          modelbox.addElement(czytelnicy.get(0).getImie()+"  "+czytelnicy.get(0).getNazwisko());
          modelbox.addElement(czytelnicy.get(1).getImie()+"  "+czytelnicy.get(1).getNazwisko());
          modelbox.addElement(czytelnicy.get(2).getImie()+"  "+czytelnicy.get(2).getNazwisko());
+    }
+    public void listaMiastaKod() {
+        List<Miasta> miasta;
+         miasta=b.selectMiasta();
+         modelboxmiasta.removeAllElements();
+         modelboxmiasta.addElement(" Inne...");
+         for (int i=0; i<miasta.size();i++)
+         modelboxmiasta.addElement(miasta.get(i).getMiasto()+"  "+miasta.get(i).getKod());
+    }
+     public void listaUlice() {
+        List<Ulice> ulice;
+         ulice=b.selectUlice();
+         modelboxulice.removeAllElements();
+         modelboxulice.addElement(" Inna...");
+         for (int i=0; i<ulice.size();i++)
+         modelboxulice.addElement(ulice.get(i).getUlica());
     }
     
     /*
@@ -110,25 +147,46 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private void initComponents() {
 
         oknotest = new javax.swing.JFrame();
+        czyt_add_imie = new javax.swing.JTextField();
+        czyt_add_nazwisko = new javax.swing.JTextField();
+        czyt_add_pesel = new javax.swing.JTextField();
+        czyt_add_DOB = new javax.swing.JTextField();
+        czyt_add_email = new javax.swing.JTextField();
+        czyt_add_username = new javax.swing.JTextField();
+        czyt_add_password = new javax.swing.JTextField();
+        czyt_add_miasto = new javax.swing.JTextField();
+        czyt_add_ulica = new javax.swing.JTextField();
+        czyt_add_nr = new javax.swing.JTextField();
+        czyt_add_telefon = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jButton6 = new javax.swing.JButton();
+        lista_miasta = new javax.swing.JComboBox<>(modelboxmiasta);
+        lista_ulice = new javax.swing.JComboBox<>(modelboxulice);
+        jButton8 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         zakladki = new javax.swing.JTabbedPane();
         ZakladkaCzytelnicy = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         TabelaCzytelnicy = new javax.swing.JTable(model);
         jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         IDfield = new javax.swing.JTextField();
         jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
         filtr_ID = new javax.swing.JTextField();
         filtr_ID1 = new javax.swing.JTextField();
-        jButton8 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         ZakladkaKsiazki = new javax.swing.JPanel();
         jComboBox1 = new javax.swing.JComboBox<>(modelbox);
         jButton7 = new javax.swing.JButton();
@@ -139,23 +197,204 @@ public class BibliotekaApp extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
-        jLabel2.setText(language[0]);
+        oknotest.setTitle("Dodaj Czytelnika");
+        oknotest.setLocation(new java.awt.Point(100, 100));
+        oknotest.setMinimumSize(new java.awt.Dimension(450, 550));
+        oknotest.setPreferredSize(new java.awt.Dimension(450, 550));
+        oknotest.setResizable(false);
+
+        czyt_add_nazwisko.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                czyt_add_nazwiskoActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Dodaj");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Anuluj");
+
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel2.setText("Imie:");
+
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel3.setText("Nazwisko:");
+
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel4.setText("Pesel:");
+
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel5.setText("Data urodzenia:");
+
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel6.setText("eMail:");
+
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel7.setText("Nazwa Użytkownika:");
+
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel8.setText("Hasło:");
+
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel9.setText("Misato:");
+
+        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel10.setText("Ulica:");
+
+        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel11.setText("Numer domu:");
+
+        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel12.setText("Telefon:");
+
+        jButton6.setText("Generuj");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
+        /*
+        lista_miasta.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        */
+        lista_miasta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lista_miastaActionPerformed(evt);
+            }
+        });
+
+        /*
+        lista_ulice.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        */
+        lista_ulice.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lista_uliceActionPerformed(evt);
+            }
+        });
+
+        jButton8.setText("jButton8");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout oknotestLayout = new javax.swing.GroupLayout(oknotest.getContentPane());
         oknotest.getContentPane().setLayout(oknotestLayout);
         oknotestLayout.setHorizontalGroup(
             oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, oknotestLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(oknotestLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(18, 18, 18)
+                .addGroup(oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(czyt_add_telefon, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                    .addComponent(czyt_add_nr, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(czyt_add_ulica)
+                    .addComponent(czyt_add_miasto)
+                    .addComponent(czyt_add_password)
+                    .addComponent(czyt_add_username)
+                    .addComponent(czyt_add_email)
+                    .addComponent(czyt_add_DOB)
+                    .addComponent(czyt_add_pesel)
+                    .addComponent(czyt_add_nazwisko)
+                    .addComponent(czyt_add_imie))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(oknotestLayout.createSequentialGroup()
+                        .addComponent(jButton6)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(lista_miasta, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lista_ulice, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, oknotestLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, oknotestLayout.createSequentialGroup()
+                        .addComponent(jButton3)
+                        .addGap(18, 18, 18))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, oknotestLayout.createSequentialGroup()
+                        .addComponent(jButton2)
+                        .addGap(118, 118, 118))))
             .addGroup(oknotestLayout.createSequentialGroup()
-                .addGap(115, 115, 115)
-                .addComponent(jLabel2)
-                .addContainerGap(219, Short.MAX_VALUE))
+                .addGap(159, 159, 159)
+                .addComponent(jButton8)
+                .addContainerGap(218, Short.MAX_VALUE))
         );
         oknotestLayout.setVerticalGroup(
             oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(oknotestLayout.createSequentialGroup()
-                .addGap(87, 87, 87)
-                .addComponent(jLabel2)
-                .addContainerGap(199, Short.MAX_VALUE))
+                .addGap(43, 43, 43)
+                .addGroup(oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(czyt_add_imie, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(czyt_add_nazwisko, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(czyt_add_pesel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(czyt_add_DOB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(czyt_add_email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(czyt_add_username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(czyt_add_password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8)
+                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(czyt_add_miasto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9)
+                    .addComponent(lista_miasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(czyt_add_ulica, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10)
+                    .addComponent(lista_ulice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(czyt_add_nr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(oknotestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(czyt_add_telefon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel12))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
+                .addGap(28, 28, 28)
+                .addComponent(jButton8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
+                .addComponent(jButton3)
+                .addContainerGap())
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -210,24 +449,10 @@ public class BibliotekaApp extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(TabelaCzytelnicy);
 
-        jButton1.setText("jButton1");
+        jButton1.setText("pokaz wszystkich");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setText("jButton3");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText("jButton2");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
             }
         });
 
@@ -239,29 +464,6 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 jButton4ActionPerformed(evt);
             }
         });
-
-        jButton5.setText("dodaj ksiazke");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
-        jButton6.setText("pokaz joina");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-
-        jTextField1.setText("jTextField1");
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
-
-        jTextField2.setText("jTextField2");
 
         filtr_ID.setText("ID czyt");
         filtr_ID.setAlignmentX(0.0F);
@@ -293,17 +495,18 @@ public class BibliotekaApp extends javax.swing.JFrame {
         filtr_ID1.setName(""); // NOI18N
         filtr_ID1.setPreferredSize(new java.awt.Dimension(70, 30));
 
-        jButton8.setText("jButton8");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
-            }
-        });
-
-        jButton9.setText("jButton9");
+        jButton9.setText("Dodaj Czytelnika");
         jButton9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton9ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jButton5.setText("jButton5");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
             }
         });
 
@@ -312,57 +515,39 @@ public class BibliotekaApp extends javax.swing.JFrame {
         ZakladkaCzytelnicyLayout.setHorizontalGroup(
             ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
-                .addGap(40, 40, 40)
-                .addComponent(IDfield, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 319, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 999, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
+                .addGap(533, 533, 533)
                 .addComponent(jButton5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton6)
-                .addGap(56, 56, 56))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
                 .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(74, 74, 74)
-                        .addComponent(jButton8)
-                        .addGap(30, 30, 30)
-                        .addComponent(jButton9))
+                        .addGap(28, 28, 28)
+                        .addComponent(jButton1)
+                        .addGap(202, 202, 202)
+                        .addComponent(IDfield, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton4))
                     .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
                         .addComponent(filtr_ID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(filtr_ID1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(403, Short.MAX_VALUE))
-            .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 999, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ZakladkaCzytelnicyLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(375, 375, 375))
         );
         ZakladkaCzytelnicyLayout.setVerticalGroup(
             ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ZakladkaCzytelnicyLayout.createSequentialGroup()
-                .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
-                        .addContainerGap(32, Short.MAX_VALUE)
-                        .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(40, 40, 40))
-                    .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jButton8)
-                            .addComponent(jButton9))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(21, 21, 21)
+                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(filtr_ID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(filtr_ID1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -371,12 +556,8 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3)
                     .addComponent(IDfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4)
-                    .addComponent(jButton6)
-                    .addComponent(jButton5))
+                    .addComponent(jButton4))
                 .addGap(26, 26, 26))
         );
 
@@ -516,11 +697,6 @@ public class BibliotekaApp extends javax.swing.JFrame {
        
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        b.updateCzytelnikImie("AHMED", 4);
-        //SelectCzytelnicyToTable();
-    }//GEN-LAST:event_jButton2ActionPerformed
-
     private void TabelaCzytelnicyKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TabelaCzytelnicyKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             System.out.println("WYWOLANIE");
@@ -537,33 +713,10 @@ public class BibliotekaApp extends javax.swing.JFrame {
         //IDfield.setText(tmp);}
     }//GEN-LAST:event_TabelaCzytelnicyKeyPressed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        b.insertCzytelnik("Maria", "Kiszka", "734873487324");
-        System.out.println("Dodano Czytelnika");
-    }//GEN-LAST:event_jButton3ActionPerformed
-
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         b.DeleteCzytelnikId(IDfield.getText());
         System.out.println("USUNIETO CZYTELNIKA");
     }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        b.insertKsiazka("jakistytul", "jakisautor", "przygoda");
-        b.insertWypozycz(1, 1);
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-       List<Ksiazka> ksiazki = b.selectKsiazki();
-        System.out.println("Lista książek:");
-       for(Ksiazka k: ksiazki)
-        System.out.println(k);
-       
-     //  List<jointest> join = b.selectJoin();
-      // System.out.println("Join");
-      // for(jointest k: join)
-      //  System.out.println(k);
-       
-    }//GEN-LAST:event_jButton6ActionPerformed
 
     private void TabelaCzytelnicyMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabelaCzytelnicyMousePressed
          int row = TabelaCzytelnicy.getSelectedRow();
@@ -586,10 +739,6 @@ public class BibliotekaApp extends javax.swing.JFrame {
         listadd();
     }//GEN-LAST:event_jButton7ActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
     private void filtr_IDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtr_IDActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_filtr_IDActionPerformed
@@ -598,19 +747,126 @@ public class BibliotekaApp extends javax.swing.JFrame {
         filtr_ID.selectAll();
     }//GEN-LAST:event_filtr_IDFocusGained
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        //Arrays.fill (language, null);
-        //language = language_angielski.clone();
-        //System.out.println(language[0]);
-    }//GEN-LAST:event_jButton8ActionPerformed
-
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        
+        listaMiastaKod();
+        listaUlice();
         oknotest.setVisible(rootPaneCheckingEnabled);
+        czyt_add_imie.setText("");czyt_add_nazwisko.setText("");czyt_add_pesel.setText("");czyt_add_DOB.setText("");
+        czyt_add_email.setText("");czyt_add_username.setText("");czyt_add_password.setText("");czyt_add_ulica.setText("");
+        czyt_add_miasto.setText("");czyt_add_nr.setText("");czyt_add_telefon.setText("");
+               
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         email();
     }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        String imie = czyt_add_imie.getText();
+        String nazwisko = czyt_add_nazwisko.getText();
+        String pesel = czyt_add_pesel.getText();
+        String DOB = czyt_add_DOB.getText();
+        String email = czyt_add_email.getText();
+        String username = czyt_add_username.getText();
+        String password = czyt_add_password.getText();
+        String id_ulica = czyt_add_ulica.getText();
+        int ulica=0;
+        try {
+        ulica = Integer.parseInt(id_ulica);
+        } catch (NumberFormatException e) {
+            System.err.println("Blad przy String_to_int");
+            System.out.println("Blad przy String_to_int");
+        }
+        
+        String id_miasto = czyt_add_miasto.getText();
+        String s="";
+        s=id_miasto.substring(id_miasto.lastIndexOf(' ') + 1);
+        //System.out.println(s);
+        int miasto =b.selectMiastaWhereKod(s);
+        
+        //String id_miasto = czyt_add_miasto.getText();
+        //String s="";
+        //s.substring(id_miasto.lastIndexOf(' ') + 1);
+       // int miasto = Integer.parseInt(id_miasto);
+        String numer_domu = czyt_add_nr.getText();
+        String telefon = czyt_add_telefon.getText();
+        //System.out.println(imie + " - " + nazwisko + " - "  + pesel + " - " + DOB + " - " + email + " - " + username + " - " + password + " - " + ulica 
+        // + " - " + miasto + " - " + numer_domu + " - " + telefon);
+        
+        if (imie.isEmpty())
+            System.out.println("bledne imie");
+        else if (nazwisko.isEmpty() )
+            System.out.println("bledne nazwisko");
+        else if (pesel.length()!=11 )
+            System.out.println("bledny pesel");
+        else if (DOB.length()!=10 )
+            System.out.println("bledna data urodzenia");
+        else if (email.isEmpty() || !email.contains("@") )
+            System.out.println("bledny email");
+        else if (username.isEmpty() )
+        {   System.out.println("wstawiam domyslna nazwe uzytkownika (pesel)");
+            username = pesel;
+        }
+        else if (password.length()<8)
+        {   System.out.println("bledne haslo");           
+        }
+        
+        else    {
+                    String hash=hashPassword(password);
+                    b.insertCzytelnik(imie, nazwisko, pesel, DOB, email, username, hash, miasto, ulica, numer_domu, telefon);
+                    System.out.println("dodano czytelnika");
+                    String [][]dodane = new String[1][10];
+            
+                    dodane = b.selectCzytelnicyZAdresem_WherePESEL(pesel);
+                    //System.out.println(Arrays.deepToString(dodane));
+                    String dodany = "ID: " + dodane[0][0] + "\nImie: " + dodane[0][1]+ "\nNazwisko: " + dodane[0][2]+ "\nPesel: " + dodane[0][3]+ "\nData Urodzenia: " + dodane[0][4]+ "\neMail: " + dodane[0][5]+ "\nUżytkownik: " + dodane[0][6]+ "\nHasło: " +password+ "\nAdres: " + dodane[0][8]+ "\nTelefon: " + dodane[0][9];
+                    //System.out.println(dodany);
+                    
+                    JOptionPane.showMessageDialog(this, "Dodano nowego czytelnika:\n\n"+dodany, "Dodano czytelnika", JOptionPane.INFORMATION_MESSAGE);
+                    oknotest.setVisible(false);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        Font f = new Font("LucidaSans",Font.BOLD, 14);
+        AttributedString napis = new AttributedString("sdsdd");
+        napis.addAttribute(TextAttribute.FONT, f);
+        String napismore  = ""+napis;
+        //Html.fromHtml(napis);
+        //String tmp  = Html.fromHtml(napis);
+        JLabel test  = new JLabel("tekst");
+        JLabel test2  = new JLabel("tekst2");
+        test.setFont(f);
+        
+        JOptionPane.showMessageDialog(this, this.add(test), "tytul", JOptionPane.INFORMATION_MESSAGE);
+      
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void czyt_add_nazwiskoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_czyt_add_nazwiskoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_czyt_add_nazwiskoActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        String password = passwordGenerator.generate(8);
+         czyt_add_password.setText(password);
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void lista_miastaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lista_miastaActionPerformed
+        czyt_add_miasto.setText((String)lista_miasta.getSelectedItem());
+    }//GEN-LAST:event_lista_miastaActionPerformed
+
+    private void lista_uliceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lista_uliceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lista_uliceActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        String id_miasto = czyt_add_miasto.getText();
+        String s="";
+        s=id_miasto.substring(id_miasto.lastIndexOf(' ') + 1);
+        System.out.println(s);
+        System.out.println(b.selectMiastaWhereKod(s));
+    }//GEN-LAST:event_jButton8ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -645,7 +901,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
          
         
         jezyk();
-      
+        
         
         // DefaultTableModel model = new DefaultTableModel(new Object[][] {},
         // new Object[] { language[0], "Imie","Nazwisko", "Pesel", "DOB", "Uźytkownik", "email", "Adres", "Telefon"});
@@ -703,7 +959,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
               hash=hashPassword(haslo);
               System.out.println(haslo);
               System.out.println(hash);
-              System.out.println(checkPassword("Mlotek66","$2a$12$P65cxIwXnqiQiXpuhg9EnOURw4IFeDuLvhD94ObqStAouaC4UcBJi"));
+              System.out.println(checkPassword("greghaslo","$2a$12$e2Ojy2ziC3DZ5i8FF1pmS.NW93dS2WOQxt9UalU6XZniQ.PWLDiaa"));
               
         String jeden = "1";
         String dwa = "dwanapis";
@@ -725,6 +981,17 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JTable TabelaCzytelnicy;
     private javax.swing.JPanel ZakladkaCzytelnicy;
     private javax.swing.JPanel ZakladkaKsiazki;
+    private javax.swing.JTextField czyt_add_DOB;
+    private javax.swing.JTextField czyt_add_email;
+    private javax.swing.JTextField czyt_add_imie;
+    private javax.swing.JTextField czyt_add_miasto;
+    private javax.swing.JTextField czyt_add_nazwisko;
+    private javax.swing.JTextField czyt_add_nr;
+    private javax.swing.JTextField czyt_add_password;
+    private javax.swing.JTextField czyt_add_pesel;
+    private javax.swing.JTextField czyt_add_telefon;
+    private javax.swing.JTextField czyt_add_ulica;
+    private javax.swing.JTextField czyt_add_username;
     private javax.swing.JTextField filtr_ID;
     private javax.swing.JTextField filtr_ID1;
     private javax.swing.JButton jButton1;
@@ -739,15 +1006,25 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JButton jButton9;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JComboBox<String> lista_miasta;
+    private javax.swing.JComboBox<String> lista_ulice;
     private javax.swing.JFrame oknotest;
     private javax.swing.JTabbedPane zakladki;
     // End of variables declaration//GEN-END:variables
