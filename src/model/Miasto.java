@@ -1,6 +1,6 @@
 package model;
 
-public class Miasta {
+public class Miasto {
     private int id;
     private String miasto;
     private String kod;
@@ -24,8 +24,8 @@ public class Miasta {
         this.kod = kod;
     }
 
-    public Miasta() {}
-    public Miasta(int id, String miasto, String kod) {
+    public Miasto() {}
+    public Miasto(int id, String miasto, String kod) {
         this.id = id;
         this.miasto = miasto;
         this.kod = kod;

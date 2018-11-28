@@ -1,6 +1,6 @@
 package model;
 
-public class Ulice {
+public class Ulica {
     private int id;
     private String ulica;
 
@@ -17,8 +17,8 @@ public class Ulice {
         this.ulica = ulica;
     }
 
-    public Ulice() {}
-    public Ulice(int id, String ulica) {
+    public Ulica() {}
+    public Ulica(int id, String ulica) {
         this.id = id;
         this.ulica = ulica;
     }

@@ -9,14 +9,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import model.SendEmail;
+import Helpers.SendEmail;
 import model.Czytelnik;
 import model.Ksiazka;
 import model.Wypozyczenie;
-import model.Miasta;
-import model.Ulice;
+import model.Miasto;
+import model.Ulica;
 
-public class Biblioteka {
+public class DatabaseAPI {
 
     public static final String DRIVER = "org.sqlite.JDBC";
     public static final String DB_URL = "jdbc:sqlite:biblioteka.db";
@@ -24,9 +24,9 @@ public class Biblioteka {
     private Connection conn;
     private Statement stat;
 
-    public Biblioteka() {
+    public DatabaseAPI() {
         try {
-            Class.forName(Biblioteka.DRIVER);
+            Class.forName(DatabaseAPI.DRIVER);
         } catch (ClassNotFoundException e) {
             System.err.println("Brak sterownika JDBC");
             e.printStackTrace();
@@ -129,12 +129,11 @@ public class Biblioteka {
         return true;
     }
     
-     public boolean insertUlica(String ulica, String numer) {
+     public boolean insertUlica(String ulica) {
         try {
             PreparedStatement prepStmt = conn.prepareStatement(
-                    "insert into adresy values (NULL, ?, ?);");
+                    "insert into ulice values (NULL, ?);");
             prepStmt.setString(1, ulica);
-            prepStmt.setString(2, numer);
             prepStmt.execute();
         } catch (SQLException e) {
             System.err.println("Blad przy dodawaniu ulicy");
@@ -146,7 +145,7 @@ public class Biblioteka {
       public boolean insertMiasto(String miasto, String kod) {
         try {
             PreparedStatement prepStmt = conn.prepareStatement(
-                    "insert into adresy values (NULL, ?, ?);");
+                    "insert into miasta values (NULL, ?, ?);");
             prepStmt.setString(1, miasto);
             prepStmt.setString(2, kod);
             prepStmt.execute();
@@ -185,8 +184,8 @@ public class Biblioteka {
         return czytelnicy;
     }
     
-     public List<Miasta> selectMiasta() {
-        List<Miasta> miasta = new LinkedList<Miasta>();
+     public List<Miasto> selectMiasta() {
+        List<Miasto> miasta = new LinkedList<Miasto>();
         String select="SELECT * from miasta ORDER BY miasto ASC";
         System.out.println(select);
         try {
@@ -198,7 +197,7 @@ public class Biblioteka {
                 miasto = result.getString("miasto");
                 kod = result.getString("kod");
 
-                miasta.add(new Miasta(id, miasto, kod));
+                miasta.add(new Miasto(id, miasto, kod));
     
             }
         } catch (SQLException e) {
@@ -231,9 +230,83 @@ public class Biblioteka {
         }
         return id;
     }
+     
+     public int selectUlicaWhereUlica(String ulica) {
+        String select="SELECT id_ulice from ulice WHERE ulica='"+ulica+"';";
+        System.out.println(select);
+        int id=0;
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                id = result.getInt("id_ulice");           
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        return id;
+    }
+     
+     
+     public int selectCountUlica(String ulica) {
+        String select="Select COUNT (ulica) as ulica from ulice where ulica LIKE '"+ulica+"';";
+        System.out.println(select);
+        int id=0;
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                id = result.getInt("ulica");           
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("blad bazy: Select COUNT (ulica) as ulica from ulice where ulica LIKE '"+ulica+"';");
+            return 0;
+        }
+        return id;
+    }     
+     
+     public int selectCountUniwersalny(String co, String gdzie_tab, String gdzie_col) {
+        String select="Select COUNT ("+gdzie_col+") as ile from "+gdzie_tab+" where "+gdzie_col+" LIKE '"+co+"';";
+        System.out.println(select);
+        int id=0;
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                id = result.getInt("ile");           
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("blad bazy: Select COUNT (ile) as ile from "+gdzie_tab+" where "+gdzie_col+" LIKE '"+co+"';");
+            return 0;
+        }
+        return id;
+    }     
+     
+     
+     
+     
+    public int selectCountMiasto(String kod) {
+        String select="Select COUNT (kod) as kod from miasta where kod LIKE '"+kod+"';";
+        System.out.println(select);
+        int id=0;
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                id = result.getInt("kod");           
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        return id;
+    }      
     
-    public List<Ulice> selectUlice() {
-        List<Ulice> ulice = new LinkedList<Ulice>();
+    public List<Ulica> selectUlice() {
+        List<Ulica> ulice = new LinkedList<Ulica>();
         String select="SELECT * from ulice ORDER BY ulica ASC";
         System.out.println(select);
         try {
@@ -244,7 +317,7 @@ public class Biblioteka {
                 id = result.getInt("id_ulice");           
                 ulica = result.getString("ulica");
 
-                ulice.add(new Ulice(id, ulica));
+                ulice.add(new Ulica(id, ulica));
     
             }
         } catch (SQLException e) {
@@ -365,6 +438,7 @@ public class Biblioteka {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            System.out.println("Blad selectczytelnicyz adresem_where pesel");
             return null;
         }
         int rozmiar=lista1.size();

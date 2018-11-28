@@ -1,4 +1,4 @@
-package model;
+package Helpers;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -6,7 +6,7 @@ import org.mindrot.jbcrypt.BCrypt;
  *
  * @author B.Grzadzielewski
  */
-public class Password {
+public class PasswordEncryption {
   	// Define the BCrypt workload to use when generating password hashes. 10-31 is a valid value.
 	private static int workload = 12;
 
