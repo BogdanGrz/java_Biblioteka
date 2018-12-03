@@ -231,6 +231,30 @@ public class DatabaseAPI {
         return id;
     }
      
+     
+     public String selectMiastoWhereKod(String kod) {
+        //List<Miasta> miasta = new LinkedList<Miasta>();
+        String select="SELECT miasto from miasta WHERE kod='"+kod+"';";
+        System.out.println(select);
+        String miasto="";
+        try {
+            ResultSet result = stat.executeQuery(select);
+            
+           // String miasto, kod;
+            while(result.next()) {
+                miasto = result.getString("miasto");           
+               // miasto = result.getString("miasto");
+                //kod = result.getString("kod");
+
+               // miasta.add(new Miasta(id, miasto, kod));
+    
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+                    }
+        return miasto;
+    }
+     
      public int selectUlicaWhereUlica(String ulica) {
         String select="SELECT id_ulice from ulice WHERE ulica='"+ulica+"';";
         System.out.println(select);
@@ -486,6 +510,40 @@ public class DatabaseAPI {
         return czytelnicyByName;
     }
     
+    public List selectCzytelnicyByPESEL(String pesel) {
+        //List<Czytelnik> czytelnicyByPESEL = new LinkedList<Czytelnik>();
+        String select="SELECT czytelnicy.id_czytelnika, czytelnicy.imie, czytelnicy.nazwisko, czytelnicy.pesel, czytelnicy.DOB, czytelnicy.username, czytelnicy.password, czytelnicy.email, ulice.ulica, czytelnicy.numer_domu, miasta.miasto, miasta.kod, czytelnicy.telefon, czytelnicy.zadluzenie FROM czytelnicy INNER JOIN ulice ON ulice.id_ulice = czytelnicy.ulica_id INNER JOIN miasta ON miasta.id_miasta = czytelnicy.miasto_id WHERE czytelnicy.pesel='"+pesel+"';";
+        List lista1 = new ArrayList();
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                lista1.add(result.getInt("id_czytelnika")); //0
+                lista1.add(result.getString("imie"));       //1
+                lista1.add(result.getString("nazwisko"));   //2
+                lista1.add(result.getString("pesel"));      //3
+                lista1.add(result.getString("DOB"));        //4
+                lista1.add(result.getString("email"));   //5
+                lista1.add(result.getString("username"));   //6
+                lista1.add(result.getString("password"));      //7
+                lista1.add(result.getString("ulica"));     //8
+                lista1.add(result.getString("numer_domu"));      //9
+                lista1.add(result.getString("miasto")); //10
+                lista1.add(result.getString("kod")); //11
+                lista1.add(result.getString("telefon"));    //12 
+                lista1.add(result.getFloat("zadluzenie"));    //13
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Blad selectczytelnicyz adresem_where ID");
+            return null;
+        }
+        
+        return lista1;
+    }
+    
+    
+    
     public boolean updateCzytelnikImie(String imie, int id)  {
         String komenda;
         komenda = "UPDATE czytelnicy SET imie='"+imie+"' WHERE id_czytelnika="+id;
@@ -500,20 +558,20 @@ public class DatabaseAPI {
         return true;
     }
     
-    public boolean updateCzytelnik(String id, String wartosc, int column)  {
-        System.out.println("WYWOLANIE UPDATE");
+
+    
+    
+    public boolean editCzytelnik(String PESEL, String name, String surname, String username, String nr, String email, String phone, Float debt)  {
+        System.out.println("WYWOLANIE EDIT user");
         String komenda;
-        if (column==1) 
-        komenda = "UPDATE czytelnicy SET imie='"+wartosc+"' WHERE id_czytelnika="+id;
-        else if (column==2)
-        komenda = "UPDATE czytelnicy SET nazwisko='"+wartosc+"' WHERE id_czytelnika="+id; 
-        else if (column==3) komenda = "UPDATE czytelnicy SET pesel='"+wartosc+"' WHERE id_czytelnika="+id; 
-        else return false;
+       
+        komenda = "UPDATE czytelnicy SET imie='"+name+"', nazwisko='"+surname+"',username='"+username+"',numer_domu='"+nr+"',email='"+email+"',telefon='"+phone+"',zadluzenie='"+debt+"' WHERE pesel="+PESEL;
+        
         System.out.println(komenda);
         try {
             stat.executeUpdate(komenda);
         } catch (SQLException e) {
-            System.err.println("Blad przy zmianie w tabeli");
+            System.err.println("Blad przy zmianie w tabeli (edit user)");
             e.printStackTrace();
             return false;
         }

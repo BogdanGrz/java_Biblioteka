@@ -57,6 +57,8 @@ import Helpers.ProgressBar;
 import model.Ulica;
 import static Helpers.Daty.czyPrzyszlosc;
 import static Helpers.Pesel.*;
+import java.util.regex.Pattern;
+import javax.swing.BorderFactory;
 
 public class BibliotekaApp extends javax.swing.JFrame {
     JFrame loading2 = new javax.swing.JFrame();
@@ -64,7 +66,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
     
     Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
     
-    
+    String selectedPesel="BRAK";
     
     
     File plik = new File("lang.txt");
@@ -246,6 +248,31 @@ public class BibliotekaApp extends javax.swing.JFrame {
         jLabel14 = new javax.swing.JLabel();
         jButton11 = new javax.swing.JButton();
         jButton12 = new javax.swing.JButton();
+        userDetails = new javax.swing.JFrame();
+        ID_user = new javax.swing.JLabel();
+        user_name = new javax.swing.JTextField();
+        user_surname = new javax.swing.JTextField();
+        user_DOB = new javax.swing.JTextField();
+        user_pesel = new javax.swing.JTextField();
+        user_username = new javax.swing.JTextField();
+        user_street = new javax.swing.JTextField();
+        user_nr = new javax.swing.JTextField();
+        user_email = new javax.swing.JTextField();
+        user_phone = new javax.swing.JTextField();
+        user_city = new javax.swing.JTextField();
+        user_debt = new javax.swing.JTextField();
+        user_close = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        jLabel27 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jLabel28 = new javax.swing.JLabel();
+        jLabel29 = new javax.swing.JLabel();
+        user_edycja = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         zakladki = new javax.swing.JTabbedPane();
         ZakladkaCzytelnicy = new javax.swing.JPanel();
@@ -626,11 +653,15 @@ public class BibliotekaApp extends javax.swing.JFrame {
 
         dodajMiasto.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         dodajMiasto.setTitle("Dodaj Miejscowość");
-        dodajMiasto.setMinimumSize(new java.awt.Dimension(300, 200));
+        dodajMiasto.setMinimumSize(new java.awt.Dimension(320, 200));
+        dodajMiasto.setPreferredSize(new java.awt.Dimension(320, 152));
 
         miastoADD.setBackground(new java.awt.Color(255, 255, 204));
+        miastoADD.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         kodADD.setBackground(new java.awt.Color(255, 255, 204));
+        kodADD.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        kodADD.setSelectedTextColor(new java.awt.Color(255, 102, 102));
 
         jLabel13.setText("Nazwa Miejscowości");
 
@@ -657,21 +688,17 @@ public class BibliotekaApp extends javax.swing.JFrame {
             .addGroup(dodajMiastoLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
                 .addGroup(dodajMiastoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(dodajMiastoLayout.createSequentialGroup()
-                        .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton12))
-                    .addGroup(dodajMiastoLayout.createSequentialGroup()
-                        .addGroup(dodajMiastoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(dodajMiastoLayout.createSequentialGroup()
-                                .addGap(19, 19, 19)
-                                .addComponent(jLabel13))
-                            .addComponent(miastoADD, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(dodajMiastoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel14)
-                            .addComponent(kodADD, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(28, Short.MAX_VALUE))
+                        .addGap(19, 19, 19)
+                        .addComponent(jLabel13))
+                    .addComponent(miastoADD, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(dodajMiastoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                    .addComponent(jLabel14)
+                    .addComponent(kodADD))
+                .addGap(28, 28, 28))
         );
         dodajMiastoLayout.setVerticalGroup(
             dodajMiastoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -689,6 +716,271 @@ public class BibliotekaApp extends javax.swing.JFrame {
                     .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton12))
                 .addContainerGap(24, Short.MAX_VALUE))
+        );
+
+        userDetails.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        userDetails.setTitle("Czytelnik");
+        userDetails.setResizable(false);
+        userDetails.setSize(new java.awt.Dimension(680, 400));
+
+        ID_user.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        ID_user.setForeground(new java.awt.Color(0, 0, 204));
+        ID_user.setText("ID: ");
+
+        user_name.setEditable(false);
+        user_name.setBackground(new java.awt.Color(240, 240, 240));
+        user_name.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        user_name.setText("IMIE");
+        user_name.setBorder(null);
+
+        user_surname.setEditable(false);
+        user_surname.setBackground(new java.awt.Color(240, 240, 240));
+        user_surname.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        user_surname.setText("NAZWISKO");
+        user_surname.setBorder(null);
+        user_surname.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                user_surnameActionPerformed(evt);
+            }
+        });
+
+        user_DOB.setEditable(false);
+        user_DOB.setBackground(new java.awt.Color(240, 240, 240));
+        user_DOB.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        user_DOB.setText("DOB");
+        user_DOB.setBorder(null);
+        user_DOB.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                user_DOBActionPerformed(evt);
+            }
+        });
+
+        user_pesel.setEditable(false);
+        user_pesel.setBackground(new java.awt.Color(240, 240, 240));
+        user_pesel.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        user_pesel.setText("PESEL");
+        user_pesel.setBorder(null);
+        user_pesel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                user_peselActionPerformed(evt);
+            }
+        });
+
+        user_username.setEditable(false);
+        user_username.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        user_username.setText("USERNAME");
+        user_username.setBorder(null);
+        user_username.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                user_usernameActionPerformed(evt);
+            }
+        });
+
+        user_street.setEditable(false);
+        user_street.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        user_street.setText("ULICA");
+        user_street.setBorder(null);
+        user_street.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                user_streetActionPerformed(evt);
+            }
+        });
+
+        user_nr.setEditable(false);
+        user_nr.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        user_nr.setText("NR");
+        user_nr.setBorder(null);
+        user_nr.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                user_nrActionPerformed(evt);
+            }
+        });
+
+        user_email.setEditable(false);
+        user_email.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        user_email.setText("EMAIL");
+        user_email.setBorder(null);
+        user_email.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                user_emailActionPerformed(evt);
+            }
+        });
+
+        user_phone.setEditable(false);
+        user_phone.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        user_phone.setText("TELEFON");
+        user_phone.setBorder(null);
+        user_phone.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                user_phoneActionPerformed(evt);
+            }
+        });
+
+        user_city.setEditable(false);
+        user_city.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        user_city.setText("MIASTO");
+        user_city.setBorder(null);
+        user_city.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                user_cityActionPerformed(evt);
+            }
+        });
+
+        user_debt.setEditable(false);
+        user_debt.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        user_debt.setText("Zadłuzenie:");
+        user_debt.setBorder(null);
+        user_debt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                user_debtActionPerformed(evt);
+            }
+        });
+
+        user_close.setText("Zamknij");
+
+        jLabel7.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel7.setText("Adres:");
+
+        jLabel18.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel18.setText("Telefon:");
+
+        jLabel23.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel23.setText("Użytkownik:");
+
+        jLabel24.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel24.setText("eMail:");
+
+        jLabel25.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel25.setText("PESEL:");
+
+        jLabel26.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel26.setText("Zadłużenie:");
+
+        jLabel27.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel27.setText("Data Urodzenia:");
+
+        jLabel28.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel28.setText("nr.");
+
+        jLabel29.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel29.setText("Miejscowość:");
+
+        user_edycja.setText("Edycja");
+        user_edycja.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                user_edycjaActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout userDetailsLayout = new javax.swing.GroupLayout(userDetails.getContentPane());
+        userDetails.getContentPane().setLayout(userDetailsLayout);
+        userDetailsLayout.setHorizontalGroup(
+            userDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(userDetailsLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(userDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(userDetailsLayout.createSequentialGroup()
+                        .addComponent(jLabel7)
+                        .addGap(6, 6, 6)
+                        .addComponent(user_street, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel28)
+                        .addGap(2, 2, 2)
+                        .addComponent(user_nr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel29)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(user_city, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(userDetailsLayout.createSequentialGroup()
+                        .addGroup(userDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(userDetailsLayout.createSequentialGroup()
+                                .addComponent(ID_user, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(user_name, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(user_surname, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(userDetailsLayout.createSequentialGroup()
+                                .addGroup(userDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, userDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, userDetailsLayout.createSequentialGroup()
+                                            .addComponent(jLabel23)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(user_username, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(15, 15, 15))
+                                        .addGroup(userDetailsLayout.createSequentialGroup()
+                                            .addComponent(jLabel18)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(user_phone, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                                    .addGroup(userDetailsLayout.createSequentialGroup()
+                                        .addComponent(jLabel25)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(user_pesel, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(131, 131, 131)))
+                                .addGroup(userDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(userDetailsLayout.createSequentialGroup()
+                                        .addComponent(jLabel27)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(user_DOB, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(userDetailsLayout.createSequentialGroup()
+                                        .addComponent(jLabel24)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(user_email, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(userDetailsLayout.createSequentialGroup()
+                                        .addComponent(jLabel26)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(user_debt, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 640, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 72, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, userDetailsLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(user_edycja, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(user_close)
+                .addGap(32, 32, 32))
+        );
+        userDetailsLayout.setVerticalGroup(
+            userDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(userDetailsLayout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addGroup(userDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ID_user)
+                    .addComponent(user_name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(user_surname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(3, 3, 3)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(userDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(user_DOB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(user_pesel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel25)
+                    .addComponent(jLabel27))
+                .addGap(20, 20, 20)
+                .addGroup(userDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(user_username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(user_email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel23)
+                    .addComponent(jLabel24))
+                .addGap(20, 20, 20)
+                .addGroup(userDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(user_street, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(user_nr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(user_city, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(jLabel28)
+                    .addComponent(jLabel29))
+                .addGap(20, 20, 20)
+                .addGroup(userDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(user_phone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(user_debt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18)
+                    .addComponent(jLabel26))
+                .addGap(18, 18, 18)
+                .addGroup(userDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(user_close)
+                    .addComponent(user_edycja, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -1005,7 +1297,8 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 String resul = TabelaCzytelnicy.getValueAt(row, column).toString();
                 // id is the primary key of my DB
                 String id = TabelaCzytelnicy.getValueAt(row, 0).toString();
-                b.updateCzytelnik(id,resul,column);}
+               // b.updateCzytelnik(id,resul,column);
+        }
         //else if (evt.getKeyCode() == KeyEvent.VK_UP) {int row = jTable2.getSelectedRow();
          //String tmp = jTable2.getValueAt(row, 0).toString();
         //IDfield.setText(tmp);}
@@ -1019,6 +1312,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private void TabelaCzytelnicyMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabelaCzytelnicyMousePressed
          int row = TabelaCzytelnicy.getSelectedRow();
          String tmp = TabelaCzytelnicy.getValueAt(row, 0).toString();
+         selectedPesel = TabelaCzytelnicy.getValueAt(row, 3).toString();
         IDfield.setText(tmp);
     }//GEN-LAST:event_TabelaCzytelnicyMousePressed
 
@@ -1026,6 +1320,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
         if ((evt.getKeyCode() == KeyEvent.VK_UP) || (evt.getKeyCode() == KeyEvent.VK_DOWN) ) 
         {int row = TabelaCzytelnicy.getSelectedRow();
          String tmp = TabelaCzytelnicy.getValueAt(row, 0).toString();
+         selectedPesel = TabelaCzytelnicy.getValueAt(row, 3).toString();
         IDfield.setText(tmp);}
     }//GEN-LAST:event_TabelaCzytelnicyKeyReleased
 
@@ -1187,6 +1482,29 @@ public class BibliotekaApp extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         
+        userDetails.setLocation(dim.width/2-(userDetails.getSize().width)/2, dim.height/2-userDetails.getSize().height/2);
+        List lista = new ArrayList();
+        lista = b.selectCzytelnicyByPESEL(selectedPesel);
+        System.out.println("wczytal liste");
+        System.out.println(lista.get(0));
+        ID_user.setText("ID: "+lista.get(0));
+        user_name.setText((String)lista.get(1));
+        user_surname.setText((String)lista.get(2));
+        user_DOB.setText((String)lista.get(4));
+        user_pesel.setText((String)lista.get(3));
+        user_username.setText((String)lista.get(6));
+        user_street.setText((String)lista.get(8));
+        user_nr.setText((String)lista.get(9));
+        user_city.setText((String)lista.get(10)+ " "+(String)lista.get(11));
+        user_phone.setText((String)lista.get(12));
+        user_debt.setText(Float.toString((float)lista.get(13)));
+        user_email.setText((String)lista.get(5));
+        
+        
+        
+        
+        
+        userDetails.setVisible(true);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void czyt_add_nazwiskoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_czyt_add_nazwiskoActionPerformed
@@ -1220,15 +1538,24 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         String miasto=miastoADD.getText();
         String kod=kodADD.getText();
-        if (!miasto.isEmpty() && kod.length()==6) {
-            if (b.selectCountMiasto(kod)!=0) System.out.println("taki kod pocztowy juz jest w bazie");
-            else {b.insertMiasto(miasto, kod); modelboxmiasta.addElement(miasto+" "+kod);}
-            czyt_add_miasto.setText(miasto+" "+kod);
+        if (Pattern.matches("^[0-9]{2}-[0-9]{3}$", kod)&& !miasto.isEmpty())  {
+            if (b.selectCountMiasto(kod)!=0) {
+                System.out.println("taki kod pocztowy juz jest w bazie");
+                
+                String miasto2=b.selectMiastoWhereKod(kod);
+                czyt_add_miasto.setText(miasto2+" "+kod);
+            }
+            else {b.insertMiasto(miasto, kod); modelboxmiasta.addElement(miasto+" "+kod);
+            czyt_add_miasto.setText(miasto+" "+kod);}
             dodajMiasto.setVisible(false);
             miastoADD.setText("");
             kodADD.setText("");
             }
-        else System.out.println("bledne dane");
+        else {
+            System.out.println("bledne dane");
+            if (!miasto.isEmpty()) { kodADD.requestFocus(); kodADD.selectAll(); }
+            else miastoADD.requestFocus();
+        }
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void lista_miastaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_lista_miastaFocusLost
@@ -1265,6 +1592,71 @@ public class BibliotekaApp extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_czyt_add_peselActionPerformed
 
+    private void user_debtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_debtActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_user_debtActionPerformed
+
+    private void user_cityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_cityActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_user_cityActionPerformed
+
+    private void user_phoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_phoneActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_user_phoneActionPerformed
+
+    private void user_emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_emailActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_user_emailActionPerformed
+
+    private void user_nrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_nrActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_user_nrActionPerformed
+
+    private void user_streetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_streetActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_user_streetActionPerformed
+
+    private void user_usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_usernameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_user_usernameActionPerformed
+
+    private void user_peselActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_peselActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_user_peselActionPerformed
+
+    private void user_DOBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_DOBActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_user_DOBActionPerformed
+
+    private void user_surnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_surnameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_user_surnameActionPerformed
+
+    private void user_edycjaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_edycjaActionPerformed
+        if(user_edycja.getText().equals("Edycja")){
+        user_name.setEditable(true);user_name.setBorder(BorderFactory.createEtchedBorder());
+        user_surname.setEditable(true);user_surname.setBorder(BorderFactory.createEtchedBorder());
+        user_email.setEditable(true);user_name.setBorder(BorderFactory.createEtchedBorder());
+        user_username.setEditable(true);user_name.setBorder(BorderFactory.createEtchedBorder());
+        user_phone.setEditable(true);user_name.setBorder(BorderFactory.createEtchedBorder());
+        user_debt.setEditable(true);user_name.setBorder(BorderFactory.createEtchedBorder());
+        user_nr.setEditable(true);user_name.setBorder(BorderFactory.createEtchedBorder());
+        user_edycja.setText("Zapisz");}
+        else 
+        {
+            user_edycja.setText("Edycja");
+            b.editCzytelnik(user_pesel.getText(), user_name.getText(), user_surname.getText(), user_username.getText(), user_nr.getText(),  user_email.getText(), user_phone.getText(), Float.parseFloat(user_debt.getText()));
+            user_name.setEditable(false);user_name.setBorder(null);
+        user_surname.setEditable(false);user_surname.setBorder(null);
+        user_email.setEditable(false);user_name.setBorder(null);
+        user_username.setEditable(false);user_name.setBorder(null);
+        user_phone.setEditable(false);user_name.setBorder(null);
+        user_debt.setEditable(false);user_name.setBorder(null);
+        user_nr.setEditable(false);user_name.setBorder(null);
+            System.out.println("pomyslna edycja czytelnika "+user_pesel.getText());
+        }
+    }//GEN-LAST:event_user_edycjaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1297,6 +1689,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel ID_user;
     private javax.swing.JTextField IDfield;
     private javax.swing.JTable TabelaCzytelnicy;
     private javax.swing.JPanel ZakladkaCzytelnicy;
@@ -1336,15 +1729,24 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu1;
@@ -1354,6 +1756,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField kodADD;
     private javax.swing.JComboBox<String> lista_miasta;
@@ -1361,6 +1764,20 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JFrame loading;
     private javax.swing.JTextField miastoADD;
     private javax.swing.JFrame oknotest;
+    private javax.swing.JFrame userDetails;
+    private javax.swing.JTextField user_DOB;
+    private javax.swing.JTextField user_city;
+    private javax.swing.JButton user_close;
+    private javax.swing.JTextField user_debt;
+    private javax.swing.JButton user_edycja;
+    private javax.swing.JTextField user_email;
+    private javax.swing.JTextField user_name;
+    private javax.swing.JTextField user_nr;
+    private javax.swing.JTextField user_pesel;
+    private javax.swing.JTextField user_phone;
+    private javax.swing.JTextField user_street;
+    private javax.swing.JTextField user_surname;
+    private javax.swing.JTextField user_username;
     private javax.swing.JTabbedPane zakladki;
     // End of variables declaration//GEN-END:variables
 }
