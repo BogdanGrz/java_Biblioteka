@@ -5,6 +5,13 @@ public class Ksiazka {
     private String tytul;
     private int autor;
     private int autor2;
+    private int autor3;
+    private String rok_wyd;
+    private String jezyk;
+    private int id_dzial;
+    private int id_gatunek;
+    private int id_kat;
+    private String opis;
 
     public int getId_ksiazki() {
         return id_ksiazki;
@@ -86,29 +93,28 @@ public class Ksiazka {
         this.id_kat = id_kat;
     }
 
-    public String getOpid() {
-        return opid;
+    public String getOpis() {
+        return opis;
     }
 
-    public void setOpid(String opid) {
-        this.opid = opid;
+    public void setOpis(String opis) {
+        this.opis = opis;
     }
-    private int autor3;
-    private String rok_wyd;
-    private String jezyk;
-    private int id_dzial;
-    private int id_gatunek;
-    private int id_kat;
-    private String opid;
 
 
     public Ksiazka() {}
-    public Ksiazka(int id_ksiazki, String tytul, int autor, int autor2 ,int autor3) {
+    public Ksiazka(int id_ksiazki, String tytul, int autor, int autor2, int autor3, String rok_wyd, String jezyk, int id_dzial, int id_gatunek, int id_kat, String opis) {
         this.id_ksiazki = id_ksiazki;
         this.tytul = tytul;
         this.autor = autor;
         this.autor2 = autor2;
         this.autor3 = autor3;
+        this.rok_wyd=rok_wyd;
+        this.jezyk=jezyk;
+        this.id_dzial=id_dzial;
+        this.id_gatunek=id_gatunek;
+        this.id_kat=id_kat;
+        this.opis=opis;
     }
 
     @Override

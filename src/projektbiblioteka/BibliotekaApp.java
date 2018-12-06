@@ -59,6 +59,9 @@ import static Helpers.Daty.czyPrzyszlosc;
 import static Helpers.Pesel.*;
 import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
+import model.Dzial;
+import model.Gatunek;
+import model.Kategoria;
 
 public class BibliotekaApp extends javax.swing.JFrame {
     JFrame loading2 = new javax.swing.JFrame();
@@ -72,8 +75,12 @@ public class BibliotekaApp extends javax.swing.JFrame {
     File plik = new File("lang.txt");
     DatabaseAPI b = new DatabaseAPI();
     static String [] language = new String[] {"polska", "Córdoba", "La Plata"}; 
+    
     DefaultTableModel model = new DefaultTableModel(new Object[][] {},
      new Object[] { language[0], "Imie","Nazwisko", "Pesel", "DOB", "Uźytkownik", "email", "Adres", "Telefon"});
+    
+    DefaultTableModel books = new DefaultTableModel(new Object[][] {},
+     new Object[] { "ID", "Tytuł", "Autor", "Dział", "Gatunek", "Kategoria"});
 
    PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
         .useDigits(true)
@@ -83,8 +90,8 @@ public class BibliotekaApp extends javax.swing.JFrame {
         .build();
     
      
-        static String [] language_polski = {"polska", "Córdoba", "La Plata"};
-        static String [] language_angielski = {"anglia", "Córdoba", "La Plata"};
+        static String [] language_polski = {"ID", "Córdoba", "La Plata"};
+        static String [] language_angielski = {"ID", "Córdoba", "La Plata"};
    
     static void jezyk() throws FileNotFoundException{
         Scanner odczyt = new Scanner(new File("lang.txt"));
@@ -100,6 +107,9 @@ public class BibliotekaApp extends javax.swing.JFrame {
     DefaultComboBoxModel modelbox = new DefaultComboBoxModel<>(new String[] {"Inne" });
     DefaultComboBoxModel modelboxmiasta = new DefaultComboBoxModel<>(new String[] {"Inne" });
     DefaultComboBoxModel modelboxulice = new DefaultComboBoxModel<>(new String[] {"Inna" });
+    DefaultComboBoxModel modelboxgatunki = new DefaultComboBoxModel<>(new String[] {"" });
+    DefaultComboBoxModel modelboxkategorie = new DefaultComboBoxModel<>(new String[] {"" });
+    DefaultComboBoxModel modelboxdzialy = new DefaultComboBoxModel<>(new String[] {"" });
  
     
     public void listadd() {
@@ -150,11 +160,49 @@ public class BibliotekaApp extends javax.swing.JFrame {
          modelboxulice.removeAllElements();
          modelboxulice.addElement(" Inna...");
          for (int i=0; i<ulice.size();i++){
-             
          modelboxulice.addElement(ulice.get(i).getUlica());
          myProgressBar.setValue(i);
          }
          modelboxulice.setSelectedItem(null);
+    }
+     
+     public void listaGatunki() {
+        
+        List<Gatunek> gatunki;
+         gatunki=b.selectGatunki();
+         modelboxgatunki.removeAllElements();
+         //modelboxgatunki.addElement(" Inna...");
+         for (int i=0; i<gatunki.size();i++){
+         modelboxgatunki.addElement(gatunki.get(i).getGatunek());
+         //myProgressBar.setValue(i);
+         }
+         modelboxgatunki.setSelectedItem(null);
+    }
+     
+     public void listaKategorie() {
+        
+        List<Kategoria> kategorie;
+         kategorie=b.selectKategorie();
+         modelboxkategorie.removeAllElements();
+         //modelboxgatunki.addElement(" Inna...");
+         for (int i=0; i<kategorie.size();i++){
+         modelboxkategorie.addElement(kategorie.get(i).getKategoria());
+         //myProgressBar.setValue(i);
+         }
+         modelboxkategorie.setSelectedItem(null);
+    }
+     
+     	 public void listaDzialy() {
+        
+        List<Dzial> dzialy;
+         dzialy=b.selectDzialy();
+         modelboxdzialy.removeAllElements();
+         //modelboxgatunki.addElement(" Inna...");
+         for (int i=0; i<dzialy.size();i++){
+         modelboxdzialy.addElement(dzialy.get(i).getDzial());
+         //myProgressBar.setValue(i);
+         }
+         modelboxdzialy.setSelectedItem(null);
     }
      
      
@@ -188,6 +236,11 @@ public class BibliotekaApp extends javax.swing.JFrame {
          model.setRowCount(0);
          for (int i=0; i<tab.length; i++)
            model.addRow(tab[i]);
+    }
+    void SelectBooksToTable(String[][] tab) {
+         books.setRowCount(0);
+         for (int i=0; i<tab.length; i++)
+           books.addRow(tab[i]);
     }
     
     
@@ -273,6 +326,26 @@ public class BibliotekaApp extends javax.swing.JFrame {
         jLabel28 = new javax.swing.JLabel();
         jLabel29 = new javax.swing.JLabel();
         user_edycja = new javax.swing.JButton();
+        booksDetails = new javax.swing.JFrame();
+        ID_book = new javax.swing.JLabel();
+        title = new javax.swing.JTextField();
+        autor = new javax.swing.JTextField();
+        gatunek = new javax.swing.JTextField();
+        dzial = new javax.swing.JTextField();
+        kategoria = new javax.swing.JTextField();
+        books_close = new javax.swing.JButton();
+        jLabel32 = new javax.swing.JLabel();
+        jLabel34 = new javax.swing.JLabel();
+        jLabel36 = new javax.swing.JLabel();
+        jSeparator2 = new javax.swing.JSeparator();
+        books_edycja1 = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        opis = new javax.swing.JTextArea();
+        jButton8 = new javax.swing.JButton();
+        listDzial = new javax.swing.JComboBox<>(modelboxdzialy);
+        listGatunek = new javax.swing.JComboBox<>(modelboxgatunki);
+        listKategoria = new javax.swing.JComboBox<>(modelboxkategorie);
+        jLabel35 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         zakladki = new javax.swing.JTabbedPane();
         ZakladkaCzytelnicy = new javax.swing.JPanel();
@@ -284,10 +357,15 @@ public class BibliotekaApp extends javax.swing.JFrame {
         filtr_ID = new javax.swing.JTextField();
         filtr_ID1 = new javax.swing.JTextField();
         jButton9 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        edycjaButton = new javax.swing.JButton();
         ZakladkaKsiazki = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>(modelbox);
+        jScrollPane1 = new javax.swing.JScrollPane();
+        TabelaBooks = new javax.swing.JTable(books);
+        jButton2 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
+        books_details = new javax.swing.JButton();
+        ID_books_field = new javax.swing.JTextField();
         jButton10 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -300,7 +378,6 @@ public class BibliotekaApp extends javax.swing.JFrame {
         oknotest.setLocation(new java.awt.Point(0, 0));
         */
         oknotest.setMinimumSize(new java.awt.Dimension(650, 550));
-        oknotest.setPreferredSize(new java.awt.Dimension(650, 505));
         oknotest.setResizable(false);
         oknotest.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowActivated(java.awt.event.WindowEvent evt) {
@@ -654,7 +731,6 @@ public class BibliotekaApp extends javax.swing.JFrame {
         dodajMiasto.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         dodajMiasto.setTitle("Dodaj Miejscowość");
         dodajMiasto.setMinimumSize(new java.awt.Dimension(320, 200));
-        dodajMiasto.setPreferredSize(new java.awt.Dimension(320, 152));
 
         miastoADD.setBackground(new java.awt.Color(255, 255, 204));
         miastoADD.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -728,13 +804,11 @@ public class BibliotekaApp extends javax.swing.JFrame {
         ID_user.setText("ID: ");
 
         user_name.setEditable(false);
-        user_name.setBackground(new java.awt.Color(240, 240, 240));
         user_name.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         user_name.setText("IMIE");
         user_name.setBorder(null);
 
         user_surname.setEditable(false);
-        user_surname.setBackground(new java.awt.Color(240, 240, 240));
         user_surname.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
         user_surname.setText("NAZWISKO");
         user_surname.setBorder(null);
@@ -745,7 +819,6 @@ public class BibliotekaApp extends javax.swing.JFrame {
         });
 
         user_DOB.setEditable(false);
-        user_DOB.setBackground(new java.awt.Color(240, 240, 240));
         user_DOB.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         user_DOB.setText("DOB");
         user_DOB.setBorder(null);
@@ -756,7 +829,6 @@ public class BibliotekaApp extends javax.swing.JFrame {
         });
 
         user_pesel.setEditable(false);
-        user_pesel.setBackground(new java.awt.Color(240, 240, 240));
         user_pesel.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         user_pesel.setText("PESEL");
         user_pesel.setBorder(null);
@@ -837,6 +909,11 @@ public class BibliotekaApp extends javax.swing.JFrame {
         });
 
         user_close.setText("Zamknij");
+        user_close.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                user_closeActionPerformed(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel7.setText("Adres:");
@@ -983,6 +1060,206 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
+        booksDetails.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        booksDetails.setTitle("Książka");
+        booksDetails.setResizable(false);
+        booksDetails.setSize(new java.awt.Dimension(680, 450));
+
+        ID_book.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        ID_book.setForeground(new java.awt.Color(0, 0, 204));
+        ID_book.setText("ID: ");
+
+        title.setEditable(false);
+        title.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        title.setText("TYTUL");
+        title.setBorder(null);
+        title.setCaretPosition(0);
+        title.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
+        autor.setEditable(false);
+        autor.setFont(new java.awt.Font("Arial", 1, 24)); // NOI18N
+        autor.setText("AUTOR");
+        autor.setBorder(null);
+        autor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                autorActionPerformed(evt);
+            }
+        });
+
+        gatunek.setEditable(false);
+        gatunek.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        gatunek.setText("GATUNEK");
+        gatunek.setBorder(null);
+        gatunek.setCaretPosition(0);
+        gatunek.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gatunekActionPerformed(evt);
+            }
+        });
+
+        dzial.setEditable(false);
+        dzial.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        dzial.setText("DZIAL");
+        dzial.setBorder(null);
+        dzial.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dzialActionPerformed(evt);
+            }
+        });
+
+        kategoria.setEditable(false);
+        kategoria.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        kategoria.setText("KATEGORIA");
+        kategoria.setBorder(null);
+        kategoria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                kategoriaActionPerformed(evt);
+            }
+        });
+
+        books_close.setText("Zamknij");
+        books_close.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                books_closeActionPerformed(evt);
+            }
+        });
+
+        jLabel32.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel32.setText("Kategoria:");
+
+        jLabel34.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel34.setText("Dział:");
+
+        jLabel36.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel36.setText("Gatunek:");
+
+        books_edycja1.setText("Edycja");
+        books_edycja1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                books_edycja1ActionPerformed(evt);
+            }
+        });
+
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder("Opis"));
+
+        opis.setEditable(false);
+        opis.setColumns(20);
+        opis.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        opis.setLineWrap(true);
+        opis.setRows(5);
+        opis.setWrapStyleWord(true);
+        opis.setBorder(null);
+        opis.setMargin(new java.awt.Insets(40, 40, 40, 40));
+        jScrollPane2.setViewportView(opis);
+
+        jButton8.setText("Egzemplarze");
+
+        /*
+        listDzial.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        */
+        listDzial.setEnabled(false);
+
+        /*
+        listGatunek.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        */
+        listGatunek.setEnabled(false);
+
+        /*
+        listKategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        */
+        listKategoria.setEnabled(false);
+
+        jLabel35.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel35.setText("Autorzy:");
+
+        javax.swing.GroupLayout booksDetailsLayout = new javax.swing.GroupLayout(booksDetails.getContentPane());
+        booksDetails.getContentPane().setLayout(booksDetailsLayout);
+        booksDetailsLayout.setHorizontalGroup(
+            booksDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(booksDetailsLayout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(booksDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(booksDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(booksDetailsLayout.createSequentialGroup()
+                            .addComponent(jButton8)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(books_edycja1, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(38, 38, 38)
+                            .addComponent(books_close))
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, booksDetailsLayout.createSequentialGroup()
+                            .addComponent(ID_book, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(34, 34, 34)
+                            .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 436, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, booksDetailsLayout.createSequentialGroup()
+                            .addComponent(jLabel35)
+                            .addGap(128, 128, 128)
+                            .addComponent(autor, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, booksDetailsLayout.createSequentialGroup()
+                            .addGap(23, 23, 23)
+                            .addGroup(booksDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(booksDetailsLayout.createSequentialGroup()
+                                    .addComponent(jLabel34)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(dzial, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(listDzial, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(40, 40, 40)
+                            .addGroup(booksDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(booksDetailsLayout.createSequentialGroup()
+                                    .addComponent(jLabel36)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(gatunek, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(listGatunek, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(40, 40, 40)
+                            .addGroup(booksDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(booksDetailsLayout.createSequentialGroup()
+                                    .addComponent(jLabel32)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(kategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(listKategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(32, Short.MAX_VALUE))
+        );
+        booksDetailsLayout.setVerticalGroup(
+            booksDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(booksDetailsLayout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addGroup(booksDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ID_book)
+                    .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(booksDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(autor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel35))
+                .addGap(33, 33, 33)
+                .addGroup(booksDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(gatunek, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dzial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel34)
+                    .addComponent(jLabel36)
+                    .addComponent(kategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel32))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(booksDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(listDzial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(listGatunek, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(listKategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
+                .addGroup(booksDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(booksDetailsLayout.createSequentialGroup()
+                        .addComponent(books_close)
+                        .addGap(30, 30, 30))
+                    .addGroup(booksDetailsLayout.createSequentialGroup()
+                        .addGroup(booksDetailsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(books_edycja1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(20, 20, 20))))
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Biblioteka");
         setBackground(new java.awt.Color(204, 255, 204));
@@ -1090,12 +1367,13 @@ public class BibliotekaApp extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jButton5.setForeground(new java.awt.Color(0, 153, 153));
-        jButton5.setText("Edycja Czytelnika");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        edycjaButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        edycjaButton.setForeground(new java.awt.Color(0, 153, 153));
+        edycjaButton.setText("Edycja Czytelnika");
+        edycjaButton.setEnabled(false);
+        edycjaButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                edycjaButtonActionPerformed(evt);
             }
         });
 
@@ -1103,9 +1381,6 @@ public class BibliotekaApp extends javax.swing.JFrame {
         ZakladkaCzytelnicy.setLayout(ZakladkaCzytelnicyLayout);
         ZakladkaCzytelnicyLayout.setHorizontalGroup(
             ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 999, Short.MAX_VALUE)
-                .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ZakladkaCzytelnicyLayout.createSequentialGroup()
                 .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
@@ -1119,27 +1394,27 @@ public class BibliotekaApp extends javax.swing.JFrame {
                         .addComponent(filtr_ID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(filtr_ID1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 363, Short.MAX_VALUE)
                         .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(edycjaButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addGap(337, 337, 337))
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         ZakladkaCzytelnicyLayout.setVerticalGroup(
             ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ZakladkaCzytelnicyLayout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(filtr_ID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(filtr_ID1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addComponent(filtr_ID1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(edycjaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)))
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -1152,56 +1427,111 @@ public class BibliotekaApp extends javax.swing.JFrame {
 
         zakladki.addTab("Czytelnicy", ZakladkaCzytelnicy);
 
-        jComboBox1.setEditable(true);
-        /*
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Inne" }));
-        */
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        jScrollPane1 = new javax.swing.JScrollPane();
+
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        jScrollPane1.setMaximumSize(new java.awt.Dimension(820, 320));
+
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(820, 320));
+        jScrollPane1.setVerticalScrollBarPolicy(jScrollPane3.VERTICAL_SCROLLBAR_ALWAYS);
+
+        TabelaBooks.setAutoCreateRowSorter(true);
+        TabelaBooks.getColumnModel().getColumn(0).setPreferredWidth(40);
+        TabelaBooks.getColumnModel().getColumn(1).setPreferredWidth(200);
+        TabelaBooks.getColumnModel().getColumn(2).setPreferredWidth(160);
+        TabelaBooks.getColumnModel().getColumn(3).setPreferredWidth(85);
+        TabelaBooks.getColumnModel().getColumn(4).setPreferredWidth(80);
+        TabelaBooks.getColumnModel().getColumn(5).setPreferredWidth(60);
+        TabelaBooks.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        TabelaBooks.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        TabelaBooks.setModel(books);
+        TabelaBooks.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_LAST_COLUMN);
+
+        TabelaBooks.setMaximumSize(new java.awt.Dimension(800, 300));
+
+        TabelaBooks.setMinimumSize(new java.awt.Dimension(800, 300));
+
+        TabelaBooks.setName(""); // NOI18N
+
+        TabelaBooks.setRowHeight(24);
+        TabelaBooks.getTableHeader().setReorderingAllowed(false);
+        TabelaBooks.getTableHeader().setResizingAllowed(false);
+        TabelaBooks.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                TabelaBooksMousePressed(evt);
+            }
+        });
+        jScrollPane1.setViewportView(TabelaBooks);
+
+        jButton2.setText("Pokaż ksiązki");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
+                jButton2ActionPerformed(evt);
             }
         });
 
-        jButton7.setText("jButton7");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
+        jButton5.setText("Dodaj Książkę");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
+                jButton5ActionPerformed(evt);
             }
         });
 
-        jButton10.setText("wyslij maila");
-        jButton10.setToolTipText("");
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
+        jButton7.setText("Dodaj Egzemplarz");
+        jButton7.setEnabled(false);
+
+        books_details.setText("Szczegóły");
+        books_details.setEnabled(false);
+        books_details.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
+                books_detailsActionPerformed(evt);
             }
         });
+
+        ID_books_field.setText("ID");
+
+        jButton10.setText("jButton10");
 
         javax.swing.GroupLayout ZakladkaKsiazkiLayout = new javax.swing.GroupLayout(ZakladkaKsiazki);
         ZakladkaKsiazki.setLayout(ZakladkaKsiazkiLayout);
         ZakladkaKsiazkiLayout.setHorizontalGroup(
             ZakladkaKsiazkiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ZakladkaKsiazkiLayout.createSequentialGroup()
-                .addContainerGap(392, Short.MAX_VALUE)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(76, 76, 76)
-                .addComponent(jButton7)
-                .addGap(337, 337, 337))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1009, Short.MAX_VALUE)
             .addGroup(ZakladkaKsiazkiLayout.createSequentialGroup()
-                .addGap(361, 361, 361)
-                .addComponent(jButton10)
+                .addGroup(ZakladkaKsiazkiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(ZakladkaKsiazkiLayout.createSequentialGroup()
+                        .addGap(55, 55, 55)
+                        .addComponent(jButton2)
+                        .addGap(200, 200, 200)
+                        .addComponent(ID_books_field, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton10))
+                    .addGroup(ZakladkaKsiazkiLayout.createSequentialGroup()
+                        .addGap(358, 358, 358)
+                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(books_details, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         ZakladkaKsiazkiLayout.setVerticalGroup(
             ZakladkaKsiazkiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ZakladkaKsiazkiLayout.createSequentialGroup()
-                .addGap(10, 10, 10)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ZakladkaKsiazkiLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(ZakladkaKsiazkiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
+                    .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(books_details, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(ZakladkaKsiazkiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton7)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(68, 68, 68)
-                .addComponent(jButton10)
-                .addContainerGap(252, Short.MAX_VALUE))
+                    .addComponent(jButton2)
+                    .addComponent(ID_books_field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton10))
+                .addGap(26, 26, 26))
         );
 
         zakladki.addTab("Książki", ZakladkaKsiazki);
@@ -1314,6 +1644,8 @@ public class BibliotekaApp extends javax.swing.JFrame {
          String tmp = TabelaCzytelnicy.getValueAt(row, 0).toString();
          selectedPesel = TabelaCzytelnicy.getValueAt(row, 3).toString();
         IDfield.setText(tmp);
+        edycjaButton.setEnabled(true);
+       
     }//GEN-LAST:event_TabelaCzytelnicyMousePressed
 
     private void TabelaCzytelnicyKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TabelaCzytelnicyKeyReleased
@@ -1323,14 +1655,6 @@ public class BibliotekaApp extends javax.swing.JFrame {
          selectedPesel = TabelaCzytelnicy.getValueAt(row, 3).toString();
         IDfield.setText(tmp);}
     }//GEN-LAST:event_TabelaCzytelnicyKeyReleased
-
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox1ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        listadd();
-    }//GEN-LAST:event_jButton7ActionPerformed
 
     private void filtr_IDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filtr_IDActionPerformed
         // TODO add your handling code here:
@@ -1369,10 +1693,6 @@ public class BibliotekaApp extends javax.swing.JFrame {
     //oknotest.setAlwaysOnTop(rootPaneCheckingEnabled);       
       
     }//GEN-LAST:event_jButton9ActionPerformed
-
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        email();
-    }//GEN-LAST:event_jButton10ActionPerformed
 
     private void dodajButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dodajButtonActionPerformed
         String imie = firstLetterCaps(czyt_add_imie.getText());
@@ -1480,7 +1800,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
       }
     }//GEN-LAST:event_dodajButtonActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void edycjaButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edycjaButtonActionPerformed
         
         userDetails.setLocation(dim.width/2-(userDetails.getSize().width)/2, dim.height/2-userDetails.getSize().height/2);
         List lista = new ArrayList();
@@ -1505,7 +1825,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
         
         
         userDetails.setVisible(true);
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_edycjaButtonActionPerformed
 
     private void czyt_add_nazwiskoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_czyt_add_nazwiskoActionPerformed
         // TODO add your handling code here:
@@ -1657,6 +1977,88 @@ public class BibliotekaApp extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_user_edycjaActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        SelectBooksToTable(b.selectBooksToTable());       
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void user_closeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_closeActionPerformed
+       userDetails.dispose();
+    }//GEN-LAST:event_user_closeActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void books_detailsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_books_detailsActionPerformed
+        booksDetails.setLocation(dim.width/2-(booksDetails.getSize().width)/2, dim.height/2-booksDetails.getSize().height/2);
+        listaGatunki();
+        listaKategorie();
+        listaDzialy();
+        int tmp= Integer.parseInt(ID_books_field.getText());
+        List lista = new ArrayList();
+        lista = b.selectBookByID(tmp);
+        System.out.println("wczytal liste ksiazka po ID");
+        System.out.println(lista.get(0));
+        ID_book.setText("ID: "+ID_books_field.getText());
+        title.setText((String)lista.get(1));
+        title.setCaretPosition(0);
+        autor.setText((String)lista.get(2)+"  "+(String)lista.get(3));
+        autor.setCaretPosition(0);
+        kategoria.setText((String)lista.get(4));
+        kategoria.setCaretPosition(0);
+        dzial.setText((String)lista.get(5));
+        dzial.setCaretPosition(0);
+        gatunek.setText((String)lista.get(6));
+        gatunek.setCaretPosition(0);
+        opis.setText((String)lista.get(7));
+        opis.setCaretPosition(0);
+//        user_nr.setText((String)lista.get(9));
+//        user_city.setText((String)lista.get(10)+ " "+(String)lista.get(11));
+//        user_phone.setText((String)lista.get(12));
+//        user_debt.setText(Float.toString((float)lista.get(13)));
+//        user_email.setText((String)lista.get(5));
+        
+        
+        
+        
+        
+        booksDetails.setVisible(true);
+    }//GEN-LAST:event_books_detailsActionPerformed
+
+    private void TabelaBooksMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabelaBooksMousePressed
+        int row = TabelaBooks.getSelectedRow();
+         String tmp = TabelaBooks.getValueAt(row, 0).toString();
+         //selectedPesel = TabelaCzytelnicy.getValueAt(row, 3).toString();
+        ID_books_field.setText(tmp);
+        books_details.setEnabled(true);
+    }//GEN-LAST:event_TabelaBooksMousePressed
+
+    private void books_edycja1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_books_edycja1ActionPerformed
+        listGatunek.setEnabled(true);
+        listKategoria.setEnabled(true);
+        listDzial.setEnabled(true);
+    }//GEN-LAST:event_books_edycja1ActionPerformed
+
+    private void books_closeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_books_closeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_books_closeActionPerformed
+
+    private void kategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kategoriaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_kategoriaActionPerformed
+
+    private void dzialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dzialActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_dzialActionPerformed
+
+    private void gatunekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gatunekActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_gatunekActionPerformed
+
+    private void autorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_autorActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1672,28 +2074,25 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 
             }
         });
-              
-              String haslo = "Mlotek66";
-              String hash = "";
-              hash=hashPassword(haslo);
-              System.out.println(haslo);
-              System.out.println(hash);
-              System.out.println(checkPassword("greghaslo","$2a$12$e2Ojy2ziC3DZ5i8FF1pmS.NW93dS2WOQxt9UalU6XZniQ.PWLDiaa"));
-              
-       
-        
-              
 
        // b.closeConnection(); 
         
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel ID_book;
+    private javax.swing.JTextField ID_books_field;
     private javax.swing.JLabel ID_user;
     private javax.swing.JTextField IDfield;
+    private javax.swing.JTable TabelaBooks;
     private javax.swing.JTable TabelaCzytelnicy;
     private javax.swing.JPanel ZakladkaCzytelnicy;
     private javax.swing.JPanel ZakladkaKsiazki;
+    private javax.swing.JTextField autor;
+    private javax.swing.JFrame booksDetails;
+    private javax.swing.JButton books_close;
+    private javax.swing.JButton books_details;
+    private javax.swing.JButton books_edycja1;
     private javax.swing.JTextField czyt_add_DOB;
     private javax.swing.JTextField czyt_add_email;
     private javax.swing.JTextField czyt_add_imie;
@@ -1707,19 +2106,23 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JTextField czyt_add_username;
     private javax.swing.JButton dodajButton;
     private javax.swing.JFrame dodajMiasto;
+    private javax.swing.JTextField dzial;
+    private javax.swing.JButton edycjaButton;
     private javax.swing.JTextField filtr_ID;
     private javax.swing.JTextField filtr_ID1;
+    private javax.swing.JTextField gatunek;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
-    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1743,6 +2146,10 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel28;
     private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
+    private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1755,15 +2162,24 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField kategoria;
     private javax.swing.JTextField kodADD;
+    private javax.swing.JComboBox<String> listDzial;
+    private javax.swing.JComboBox<String> listGatunek;
+    private javax.swing.JComboBox<String> listKategoria;
     private javax.swing.JComboBox<String> lista_miasta;
     private javax.swing.JComboBox<String> lista_ulice;
     private javax.swing.JFrame loading;
     private javax.swing.JTextField miastoADD;
     private javax.swing.JFrame oknotest;
+    private javax.swing.JTextArea opis;
+    private javax.swing.JTextField title;
     private javax.swing.JFrame userDetails;
     private javax.swing.JTextField user_DOB;
     private javax.swing.JTextField user_city;

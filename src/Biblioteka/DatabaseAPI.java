@@ -11,6 +11,9 @@ import java.util.LinkedList;
 import java.util.List;
 import Helpers.SendEmail;
 import model.Czytelnik;
+import model.Dzial;
+import model.Gatunek;
+import model.Kategoria;
 import model.Ksiazka;
 import model.Wypozyczenie;
 import model.Miasto;
@@ -50,11 +53,11 @@ public class DatabaseAPI {
         String createMiasta = "CREATE TABLE IF NOT EXISTS miasta (id_miasta INTEGER PRIMARY KEY AUTOINCREMENT, miasto varchar(255), kod varchar(6))";
         String createAutorzy = "CREATE TABLE IF NOT EXISTS autorzy (id_autora INTEGER PRIMARY KEY AUTOINCREMENT, nazwisko varchar(100), imie varchar(30))";
         String createDzialy = "CREATE TABLE IF NOT EXISTS dzialy (id_dzialu INTEGER PRIMARY KEY AUTOINCREMENT, nazwa_dzi varchar(100))";
-        String createGatunki = "CREATE TABLE IF NOT EXISTS gatunki (id_gatunku INTEGER PRIMARY KEY AUTOINCREMENT, nazwa_gat varchar(100))";
+        String createGatunki = "CREATE TABLE IF NOT EXISTS gatunki (id_gatunku INTEGER PRIMARY KEY AUTOINCREMENT, nazwa_gatunku varchar(100))";
         String createKategorie = "CREATE TABLE IF NOT EXISTS kategorie (id_kategori INTEGER PRIMARY KEY AUTOINCREMENT, nazwa_kat varchar(100))";
         String createWydawnictwa = "CREATE TABLE IF NOT EXISTS wydawnictwa (id_wydawnictwa INTEGER PRIMARY KEY AUTOINCREMENT, nazwa_wyd varchar(100))";
-        String createKsiazki = "CREATE TABLE IF NOT EXISTS ksiazki (id_ksiazki INTEGER PRIMARY KEY AUTOINCREMENT, tytul varchar(255), autor int, autor2 int, autor3 int, rok_wyd varchar(10), jezyk varchar(100), id_dzial int, id_gatunek int, id_kat int DEFAULT 1, opis TEXT)";
-        String createEgzemplarze = "CREATE TABLE IF NOT EXISTS egzemplarze (id_egzemplarza INTEGER PRIMARY KEY AUTOINCREMENT, lokalizacja varchar(255), stan varchar(255), id_wyd int, id_ksiazki int)";
+        String createKsiazki = "CREATE TABLE IF NOT EXISTS ksiazki (id_ksiazki INTEGER PRIMARY KEY AUTOINCREMENT, tytul varchar(255), autor int, autor2 int, autor3 int, id_dzial int, id_gatunek int, id_kat int DEFAULT 1, opis TEXT)";
+        String createEgzemplarze = "CREATE TABLE IF NOT EXISTS egzemplarze (id_egzemplarza INTEGER PRIMARY KEY AUTOINCREMENT, id_ksiazki int, lokalizacja varchar(255), stan varchar(255), id_wyd int, rok_wyd varchar(10), jezyk varchar(100))";
         try {
             stat.execute(createCzytelnicy);
             stat.execute(createKsiazki);
@@ -351,6 +354,73 @@ public class DatabaseAPI {
         return ulice;
     } 
     
+    
+    public List<Gatunek> selectGatunki() {
+        List<Gatunek> gatunki = new LinkedList<Gatunek>();
+        String select="SELECT * from gatunki ORDER BY nazwa_gatunku COLLATE NOCASE ASC";
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            int id;
+            String gatunek;
+            while(result.next()) {
+                id = result.getInt("id_gatunku");           
+                gatunek = result.getString("nazwa_gatunku");
+
+                gatunki.add(new Gatunek(id, gatunek));
+    
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return gatunki;
+    } 
+    
+    public List<Kategoria> selectKategorie() {
+        List<Kategoria> Kategorie = new LinkedList<Kategoria>();
+        String select="SELECT * from kategorie ORDER BY nazwa_kat COLLATE NOCASE ASC";
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            int id;
+            String Kategoria;
+            while(result.next()) {
+                id = result.getInt("id_kategori");           
+                Kategoria = result.getString("nazwa_kat");
+
+                Kategorie.add(new Kategoria(id, Kategoria));
+    
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return Kategorie;
+    }
+    
+    public List<Dzial> selectDzialy() {
+        List<Dzial> Dzialy = new LinkedList<Dzial>();
+        String select="SELECT * from dzialy ORDER BY nazwa_dzi COLLATE NOCASE ASC";
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            int id;
+            String Dzial;
+            while(result.next()) {
+                id = result.getInt("id_dzialu");           
+                Dzial = result.getString("nazwa_dzi");
+
+                Dzialy.add(new Dzial(id, Dzial));
+    
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return Dzialy;
+    } 
+    
     public String[][] selectCzytelnicyToArray() {
         String select="SELECT * FROM czytelnicy";
         List lista1 = new ArrayList();
@@ -542,7 +612,31 @@ public class DatabaseAPI {
         return lista1;
     }
     
-    
+    public List selectBookByID(int id) {
+        //List<Czytelnik> czytelnicyByPESEL = new LinkedList<Czytelnik>();
+        String select="SELECT ksiazki.id_ksiazki, ksiazki.tytul, autorzy.nazwisko, autorzy.imie, kategorie.nazwa_kat, dzialy.nazwa_dzi, gatunki.nazwa_gatunku, ksiazki.opis FROM ksiazki JOIN autorzy ON ksiazki.autor=autorzy.id_autora JOIN kategorie ON ksiazki.id_kat=kategorie.id_kategori JOIN dzialy ON ksiazki.id_dzial=dzialy.id_dzialu JOIN gatunki ON ksiazki.id_gatunek=gatunki.id_gatunku  where ksiazki.id_ksiazki='"+id+"';";
+        List lista1 = new ArrayList();
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                lista1.add(result.getInt("id_ksiazki")); //0
+                lista1.add(result.getString("tytul"));       //1
+                lista1.add(result.getString("nazwisko"));   //2
+                lista1.add(result.getString("imie"));      //3
+                lista1.add(result.getString("nazwa_kat"));        //4
+                lista1.add(result.getString("nazwa_dzi"));   //5
+                lista1.add(result.getString("nazwa_gatunku"));   //6
+                lista1.add(result.getString("opis"));      //7
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Blad select books where ID");
+            return null;
+        }
+        
+        return lista1;
+    }
     
     public boolean updateCzytelnikImie(String imie, int id)  {
         String komenda;
@@ -612,6 +706,45 @@ public class DatabaseAPI {
         }
         return ksiazki;
     }
+    
+    
+    public String[][] selectBooksToTable() {
+        String select="select ksiazki.id_ksiazki, ksiazki.tytul, autorzy.nazwisko, autorzy.imie, dzialy.nazwa_dzi, gatunki.nazwa_gatunku, kategorie.nazwa_kat FROM ksiazki INNER JOIN autorzy ON ksiazki.autor=autorzy.id_autora INNER JOIN dzialy ON ksiazki.id_dzial=dzialy.id_dzialu INNER JOIN gatunki ON gatunki.id_gatunku=ksiazki.id_gatunek INNER JOIN kategorie ON ksiazki.id_kat=kategorie.id_kategori;";
+        List lista1 = new ArrayList();
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                lista1.add(result.getInt("id_ksiazki")); //0
+                lista1.add(result.getString("tytul"));       //1
+                lista1.add(result.getString("nazwisko"));   //2
+                lista1.add(result.getString("imie"));      //3
+                lista1.add(result.getString("nazwa_dzi"));        //4
+                lista1.add(result.getString("nazwa_gatunku"));   //5
+                lista1.add(result.getString("nazwa_kat"));      //6  
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        int rozmiar=lista1.size();
+        System.out.println(rozmiar);
+         String[][] tmp = new String[rozmiar/7][6];
+         for (int i=0, j=0; i<(rozmiar/7); i++, j+=7)
+         {
+             System.out.println(i+" ");
+             tmp[i][0]=String.format("%08d", lista1.get(j));
+             tmp[i][1]=(String)lista1.get(j+1);
+             String tempo=lista1.get(j+2)+"  "+lista1.get(j+3);
+             tmp[i][2]=tempo;
+             tmp[i][3]=(String)lista1.get(j+4);
+             tmp[i][4]=(String)lista1.get(j+5);
+             tmp[i][5]=(String)lista1.get(j+6);
+         }
+        return tmp;
+    }
+    
+    
     
      public void CzytelnikImie (String imie, List<Czytelnik> czytelnicy){
         for(Czytelnik c: czytelnicy)
