@@ -12,7 +12,7 @@ public class Pesel {
 
     String numer = "82090918757";
 
-    static public String dataUrodzenia(String numer) {
+    public static String dataUrodzenia(String numer) {
         if (sprawdzPesel(numer) == false) {
             return "bledny pesel";
         }
@@ -73,7 +73,7 @@ public class Pesel {
         return true;
     }
 
-    static String generujPesel(int rok_od, int rok_do) {
+    public static String generujPesel(int rok_od, int rok_do) {
         if (rok_od < 1800 || rok_do > 2299 || rok_do < rok_od) {
             return "bledne dane wejsciowe";
         }

@@ -276,6 +276,25 @@ public class DatabaseAPI {
     }
      
      
+     public int selectIDWhereSzukana(String szukana, String nazwaKolId, String nazwaKolSzukanej, String nazwaTabeli) {
+        
+        String select="SELECT "+nazwaKolId+" from "+nazwaTabeli+" WHERE "+nazwaKolSzukanej+"='"+szukana+"';";
+        System.out.println(select);
+        int id=0;
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                id = result.getInt(nazwaKolId);           
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        return id;
+    }
+     
+     
      public int selectCountUlica(String ulica) {
         String select="Select COUNT (ulica) as ulica from ulice where ulica LIKE '"+ulica+"';";
         System.out.println(select);
@@ -671,6 +690,25 @@ public class DatabaseAPI {
         }
         return true;
     }
+    
+    public boolean editBook(int id_ksiazki, String tytul, int id_dzial, int id_gatunek, int id_kat, String opis)  {
+        System.out.println("WYWOLANIE EDIT book");
+        String komenda;
+       
+        komenda = "UPDATE ksiazki SET tytul='"+tytul+"', id_dzial='"+id_dzial+"', id_gatunek='"+id_gatunek+"',id_kat='"+id_kat+"',opis='"+opis+"' WHERE id_ksiazki="+id_ksiazki;
+        
+        System.out.println(komenda);
+        try {
+            stat.executeUpdate(komenda);
+        } catch (SQLException e) {
+            System.err.println("Blad przy zmianie w tabeli (edit book)");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
+    
     
     public boolean DeleteCzytelnikId(String id)  {
         String komenda;
