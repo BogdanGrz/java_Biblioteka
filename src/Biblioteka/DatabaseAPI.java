@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import Helpers.SendEmail;
+import model.Autor;
 import model.Czytelnik;
 import model.Dzial;
 import model.Gatunek;
@@ -117,6 +118,25 @@ public class DatabaseAPI {
         }
         return true;
     }
+    
+    public boolean insertBook(String tytul, int autor, int dzial, int gatunek, int kategoria, String opis) {
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into ksiazki values (NULL, ?, ?, ?, ?, ?, ?);");
+            prepStmt.setString(1, tytul);
+            prepStmt.setInt(2, autor);
+            prepStmt.setInt(3, dzial);
+            prepStmt.setInt(4, gatunek);
+            prepStmt.setInt(5, kategoria);
+            prepStmt.setString(6, opis);
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu ksiazki");
+            return false;
+        }
+        return true;
+    }
+    
 
     public boolean insertWypozycz(int idCzytelnik, int idKsiazka) {
         try {
@@ -210,6 +230,28 @@ public class DatabaseAPI {
         return miasta;
     }
      
+     public List<Autor> selectAutorzy() {
+        List<Autor> autorzy = new LinkedList<Autor>();
+        String select="SELECT * from autorzy ORDER BY nazwisko ASC";
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            int id;
+            String nazwisko, imie;
+            while(result.next()) {
+                id = result.getInt("id_autora");           
+                nazwisko = result.getString("nazwisko");
+                imie = result.getString("imie");
+
+                autorzy.add(new Autor(id, nazwisko, imie));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return autorzy;
+    }
+     
      public int selectMiastaWhereKod(String kod) {
         //List<Miasta> miasta = new LinkedList<Miasta>();
         String select="SELECT id_miasta from miasta WHERE kod='"+kod+"';";
@@ -233,6 +275,26 @@ public class DatabaseAPI {
         }
         return id;
     }
+     
+     public int selectAutorzyWhereNazwiskoIImie(String nazwisko, String imie) {
+        //List<Miasta> miasta = new LinkedList<Miasta>();
+        String select="SELECT id_autora from autorzy WHERE nazwisko='"+nazwisko+"' AND imie='"+imie+"';";
+        System.out.println(select);
+        int id=0;
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                id = result.getInt("id_autora");           
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        return id;
+    }
+     
+     
+     
      
      
      public String selectMiastoWhereKod(String kod) {

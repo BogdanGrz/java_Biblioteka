@@ -103,7 +103,7 @@ public class Ksiazka {
 
 
     public Ksiazka() {}
-    public Ksiazka(int id_ksiazki, String tytul, int autor, int autor2, int autor3, String rok_wyd, String jezyk, int id_dzial, int id_gatunek, int id_kat, String opis) {
+    public Ksiazka(int id_ksiazki, String tytul, int autor, String rok_wyd, String jezyk, int id_dzial, int id_gatunek, int id_kat, String opis) {
         this.id_ksiazki = id_ksiazki;
         this.tytul = tytul;
         this.autor = autor;
