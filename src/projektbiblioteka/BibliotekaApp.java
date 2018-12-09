@@ -57,12 +57,17 @@ import Helpers.ProgressBar;
 import model.Ulica;
 import static Helpers.Daty.czyPrzyszlosc;
 import static Helpers.Pesel.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.regex.Pattern;
 import javax.swing.BorderFactory;
 import model.Autor;
 import model.Dzial;
 import model.Gatunek;
 import model.Kategoria;
+import model.Lokalizacja;
+import model.Stan;
+import model.Wydawnictwo;
 
 public class BibliotekaApp extends javax.swing.JFrame {
     JFrame loading2 = new javax.swing.JFrame();
@@ -112,7 +117,19 @@ public class BibliotekaApp extends javax.swing.JFrame {
     DefaultComboBoxModel modelboxkategorie = new DefaultComboBoxModel<>(new String[] {"" });
     DefaultComboBoxModel modelboxdzialy = new DefaultComboBoxModel<>(new String[] {"" });
     DefaultComboBoxModel modelboxautorzy = new DefaultComboBoxModel<>(new String[] {"" });
+    DefaultComboBoxModel modelboxstany = new DefaultComboBoxModel<>(new String[] {"" });
+    DefaultComboBoxModel modelboxlokalizacje = new DefaultComboBoxModel<>(new String[] {"" });
+    DefaultComboBoxModel modelboxwydawnictwa = new DefaultComboBoxModel<>(new String[] {"" });
  
+    
+    void czytAddLoading(){
+        listaMiastaKod();
+        
+        listaUlice();
+        czyt_add_imie.setText("");czyt_add_nazwisko.setText("");czyt_add_pesel.setText("");czyt_add_DOB.setText("");
+        czyt_add_email.setText("");czyt_add_username.setText("");czyt_add_password.setText("");czyt_add_ulica.setText("");
+        czyt_add_miasto.setText("");czyt_add_nr.setText("");czyt_add_telefon.setText(""); 
+    }
     
     public void listadd() {
         List<Czytelnik> czytelnicy;
@@ -143,29 +160,6 @@ public class BibliotekaApp extends javax.swing.JFrame {
          for (int i=0; i<autorzy.size();i++)
          modelboxautorzy.addElement(autorzy.get(i).getNazwisko()+"  "+autorzy.get(i).getImie());
          modelboxautorzy.setSelectedItem(null);
-    }
-    
-    
-    void updateProgress(final int newValue) {
-        //pb.setValue(newValue);
-    }
-
-    public void setValue(final int j) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                updateProgress(j);
-            }
-        });
-    }
-    
-    void czytAddLoading(){
-        listaMiastaKod();
-        
-        listaUlice();
-        czyt_add_imie.setText("");czyt_add_nazwisko.setText("");czyt_add_pesel.setText("");czyt_add_DOB.setText("");
-        czyt_add_email.setText("");czyt_add_username.setText("");czyt_add_password.setText("");czyt_add_ulica.setText("");
-        czyt_add_miasto.setText("");czyt_add_nr.setText("");czyt_add_telefon.setText(""); 
     }
     
      public void listaUlice() {
@@ -207,7 +201,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
          modelboxkategorie.setSelectedItem(null);
     }
      
-     	 public void listaDzialy() {
+     public void listaDzialy() {
         
         List<Dzial> dzialy;
          dzialy=b.selectDzialy();
@@ -220,7 +214,42 @@ public class BibliotekaApp extends javax.swing.JFrame {
          modelboxdzialy.setSelectedItem(null);
     }
      
+      public void listaLokalizacje() {
+        
+        List<Lokalizacja> lokalizacje;
+         lokalizacje=b.selectLokalizacje();
+         modelboxlokalizacje.removeAllElements();
+         for (int i=0; i<lokalizacje.size();i++){
+         modelboxlokalizacje.addElement(lokalizacje.get(i).getLokalizacja());
+         }
+         modelboxlokalizacje.setSelectedItem(null);
+    }
+      
+//        public void listaStany() {
+//        
+//        List<Stan> stany;
+//         stany=b.selectStany();
+//         modelboxstany.removeAllElements();
+//         for (int i=0; i<stany.size();i++){
+//         modelboxstany.addElement(stany.get(i).getStan());
+//         }
+//         modelboxstany.setSelectedItem(null);
+//    }
+        
+//       public void listaWydawnictwa() {
+//        
+//        List<Wydawnictwo> wydawnictwa;
+//         wydawnictwa=b.selectWydawnictwa();
+//         modelboxwydawnictwa.removeAllElements();
+//         for (int i=0; i<wydawnictwa.size();i++){
+//         modelboxwydawnictwa.addElement(wydawnictwa.get(i).getWydawnictwo());
+//         }
+//         modelboxwydawnictwa.setSelectedItem(null);
+//    }
      
+     
+         
+         
      
      static public String firstLetterCaps ( String data )
         {
@@ -392,6 +421,29 @@ public class BibliotekaApp extends javax.swing.JFrame {
         jLabel37 = new javax.swing.JLabel();
         jButton14 = new javax.swing.JButton();
         jButton15 = new javax.swing.JButton();
+        oknoDodajEgzemplarz = new javax.swing.JFrame();
+        jPanel6 = new javax.swing.JPanel();
+        jTextField3 = new javax.swing.JTextField();
+        dodajButtonNew1 = new javax.swing.JButton();
+        jButton16 = new javax.swing.JButton();
+        jLabel38 = new javax.swing.JLabel();
+        jLabel39 = new javax.swing.JLabel();
+        jLabel42 = new javax.swing.JLabel();
+        jLabel43 = new javax.swing.JLabel();
+        tittleNew1 = new javax.swing.JTextField();
+        autorNew1 = new javax.swing.JTextField();
+        listLokalizacja = new javax.swing.JComboBox<>(modelboxlokalizacje);
+        listStan = new javax.swing.JComboBox<>(modelboxstany);
+        tytul1 = new javax.swing.JLabel();
+        dzialNew1 = new javax.swing.JTextField();
+        gatunekNew1 = new javax.swing.JTextField();
+        jLabel53 = new javax.swing.JLabel();
+        kategoriaNew1 = new javax.swing.JTextField();
+        listWydawnictwo = new javax.swing.JComboBox<>(modelboxwydawnictwa);
+        jLabel54 = new javax.swing.JLabel();
+        autorNew2 = new javax.swing.JTextField();
+        jLabel55 = new javax.swing.JLabel();
+        autorNew3 = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         zakladki = new javax.swing.JTabbedPane();
         ZakladkaCzytelnicy = new javax.swing.JPanel();
@@ -399,7 +451,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
         TabelaCzytelnicy = new javax.swing.JTable(model);
         pokazCzytelnikow = new javax.swing.JButton();
         IDfield = new javax.swing.JTextField();
-        jButton4 = new javax.swing.JButton();
+        usunCzyt = new javax.swing.JButton();
         filtr_ID = new javax.swing.JTextField();
         filtr_ID1 = new javax.swing.JTextField();
         jButton9 = new javax.swing.JButton();
@@ -409,10 +461,10 @@ public class BibliotekaApp extends javax.swing.JFrame {
         TabelaBooks = new javax.swing.JTable(books);
         pokazKsiazki = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        dodajEgzButton = new javax.swing.JButton();
         books_details = new javax.swing.JButton();
         ID_books_field = new javax.swing.JTextField();
-        jButton10 = new javax.swing.JButton();
+        usunKsiazke = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -1350,6 +1402,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
 
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(153, 255, 255), new java.awt.Color(0, 51, 51)));
 
+        jTextField2.setEditable(false);
         jTextField2.setBackground(new java.awt.Color(255, 255, 204));
         jTextField2.setText(" wymagane ");
 
@@ -1560,15 +1613,17 @@ public class BibliotekaApp extends javax.swing.JFrame {
                     .addComponent(jLabel40)
                     .addComponent(listDzialNew, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel41)
-                    .addComponent(listGatunekNew, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(gatunekNew, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(listGatunekNew, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(gatunekNew, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel51)
-                    .addComponent(listKategoriaNew, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(kategoriaNew, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(listKategoriaNew, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(kategoriaNew, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
@@ -1666,10 +1721,272 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 .addContainerGap(24, Short.MAX_VALUE))
         );
 
+        oknoDodajEgzemplarz.setTitle("Dodaj Egzemplarz");
+        oknoDodajEgzemplarz.setLocation(new java.awt.Point(0, 0));
+        oknoDodajEgzemplarz.setMinimumSize(new java.awt.Dimension(650, 550));
+        oknoDodajEgzemplarz.setUndecorated(true);
+        oknoDodajEgzemplarz.setResizable(false);
+        oknoDodajEgzemplarz.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                oknoDodajEgzemplarzWindowActivated(evt);
+            }
+        });
+
+        jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder(new java.awt.Color(153, 255, 255), new java.awt.Color(0, 51, 51)));
+
+        jTextField3.setEditable(false);
+        jTextField3.setBackground(new java.awt.Color(255, 255, 204));
+        jTextField3.setText(" wymagane ");
+
+        dodajButtonNew1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        dodajButtonNew1.setText("Dodaj");
+        dodajButtonNew1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dodajButtonNew1ActionPerformed(evt);
+            }
+        });
+
+        jButton16.setText("Anuluj");
+        jButton16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton16ActionPerformed(evt);
+            }
+        });
+
+        jLabel38.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel38.setText("Tytuł:");
+
+        jLabel39.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel39.setText("Autor:");
+
+        jLabel42.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel42.setText("Lokalizacja:");
+
+        jLabel43.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel43.setText("Stan:");
+
+        tittleNew1.setEditable(false);
+        tittleNew1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        tittleNew1.setMargin(new java.awt.Insets(2, 4, 2, 2));
+        tittleNew1.setSelectionColor(new java.awt.Color(255, 102, 102));
+
+        autorNew1.setEditable(false);
+        autorNew1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        autorNew1.setMargin(new java.awt.Insets(2, 4, 2, 2));
+        autorNew1.setSelectionColor(new java.awt.Color(255, 102, 102));
+        autorNew1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                autorNew1ActionPerformed(evt);
+            }
+        });
+
+        /*
+        listLokalizacja.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        listLokalizacja.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        listLokalizacja.setToolTipText("wybierz z listy");
+        */
+        listLokalizacja.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                listLokalizacjaFocusLost(evt);
+            }
+        });
+        listLokalizacja.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listLokalizacjaActionPerformed(evt);
+            }
+        });
+
+        /*
+        listStan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        */
+        listStan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listStanActionPerformed(evt);
+            }
+        });
+
+        tytul1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        tytul1.setText("Dodawanie Egzemplarza");
+
+        dzialNew1.setEditable(false);
+        dzialNew1.setBackground(new java.awt.Color(255, 255, 204));
+        dzialNew1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        dzialNew1.setText("wybierz z listy");
+        dzialNew1.setMargin(new java.awt.Insets(2, 4, 2, 2));
+        dzialNew1.setName(""); // NOI18N
+        dzialNew1.setSelectionColor(new java.awt.Color(255, 102, 102));
+
+        gatunekNew1.setEditable(false);
+        gatunekNew1.setBackground(new java.awt.Color(255, 255, 204));
+        gatunekNew1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        gatunekNew1.setText("wybierz z listy");
+        gatunekNew1.setMargin(new java.awt.Insets(2, 4, 2, 2));
+        gatunekNew1.setSelectionColor(new java.awt.Color(255, 102, 102));
+
+        jLabel53.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel53.setText("Wydawnictwo:");
+
+        kategoriaNew1.setEditable(false);
+        kategoriaNew1.setBackground(new java.awt.Color(255, 255, 204));
+        kategoriaNew1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        kategoriaNew1.setText("wybierz z listy");
+        kategoriaNew1.setMargin(new java.awt.Insets(2, 4, 2, 2));
+        kategoriaNew1.setSelectionColor(new java.awt.Color(255, 102, 102));
+
+        /*
+        listWydawnictwo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        */
+        listWydawnictwo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                listWydawnictwoActionPerformed(evt);
+            }
+        });
+
+        jLabel54.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel54.setText("Rok wydania:");
+
+        autorNew2.setBackground(new java.awt.Color(255, 255, 204));
+        autorNew2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        autorNew2.setMargin(new java.awt.Insets(2, 4, 2, 2));
+        autorNew2.setSelectionColor(new java.awt.Color(255, 102, 102));
+        autorNew2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                autorNew2ActionPerformed(evt);
+            }
+        });
+
+        jLabel55.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel55.setText("Język:");
+
+        autorNew3.setBackground(new java.awt.Color(255, 255, 204));
+        autorNew3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        autorNew3.setMargin(new java.awt.Insets(2, 4, 2, 2));
+        autorNew3.setSelectionColor(new java.awt.Color(255, 102, 102));
+        autorNew3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                autorNew3ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel42, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel39, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel38, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(dzialNew1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(listLokalizacja, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(autorNew1)
+                                .addComponent(tittleNew1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE))))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGap(61, 61, 61)
+                                .addComponent(tytul1, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(jLabel43, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(gatunekNew1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGap(57, 57, 57)
+                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(listStan, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel54, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel53, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel55, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addComponent(dodajButtonNew1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton16)
+                                .addGap(13, 13, 13))
+                            .addGroup(jPanel6Layout.createSequentialGroup()
+                                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(autorNew2, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(kategoriaNew1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                                    .addComponent(autorNew3, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(listWydawnictwo, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(51, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tytul1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tittleNew1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel38))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(autorNew1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel39))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(dzialNew1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel42)
+                    .addComponent(listLokalizacja, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(listStan, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gatunekNew1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel43))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(listWydawnictwo, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(kategoriaNew1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel53))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(autorNew2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel54))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(autorNew3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel55))
+                .addGap(71, 71, 71)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(dodajButtonNew1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton16))
+                .addContainerGap(14, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout oknoDodajEgzemplarzLayout = new javax.swing.GroupLayout(oknoDodajEgzemplarz.getContentPane());
+        oknoDodajEgzemplarz.getContentPane().setLayout(oknoDodajEgzemplarzLayout);
+        oknoDodajEgzemplarzLayout.setHorizontalGroup(
+            oknoDodajEgzemplarzLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        oknoDodajEgzemplarzLayout.setVerticalGroup(
+            oknoDodajEgzemplarzLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Biblioteka");
         setBackground(new java.awt.Color(204, 255, 204));
         setLocation(new java.awt.Point(0, 0));
+        setResizable(false);
 
         zakladki.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         zakladki.setForeground(new java.awt.Color(0, 51, 204));
@@ -1678,7 +1995,6 @@ public class BibliotekaApp extends javax.swing.JFrame {
         ZakladkaCzytelnicy.setAlignmentX(0.0F);
         ZakladkaCzytelnicy.setAlignmentY(0.0F);
 
-        jScrollPane3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jScrollPane3.setMaximumSize(new java.awt.Dimension(820, 320));
         jScrollPane3.setPreferredSize(new java.awt.Dimension(820, 320));
         jScrollPane3.setVerticalScrollBarPolicy(jScrollPane3.VERTICAL_SCROLLBAR_ALWAYS);
@@ -1718,7 +2034,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(TabelaCzytelnicy);
 
-        pokazCzytelnikow.setText("pokaz wszystkich");
+        pokazCzytelnikow.setText("Pokaz Czytelników");
         pokazCzytelnikow.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 pokazCzytelnikowActionPerformed(evt);
@@ -1727,10 +2043,12 @@ public class BibliotekaApp extends javax.swing.JFrame {
 
         IDfield.setText("ID");
 
-        jButton4.setText("USUN");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        usunCzyt.setForeground(new java.awt.Color(255, 102, 102));
+        usunCzyt.setText("Usuń Czytelnika");
+        usunCzyt.setEnabled(false);
+        usunCzyt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                usunCzytActionPerformed(evt);
             }
         });
 
@@ -1774,7 +2092,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
         });
 
         edycjaButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        edycjaButton.setForeground(new java.awt.Color(0, 153, 153));
+        edycjaButton.setForeground(new java.awt.Color(204, 148, 62));
         edycjaButton.setText("Edycja Czytelnika");
         edycjaButton.setEnabled(false);
         edycjaButton.addActionListener(new java.awt.event.ActionListener() {
@@ -1790,44 +2108,46 @@ public class BibliotekaApp extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ZakladkaCzytelnicyLayout.createSequentialGroup()
                 .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addComponent(pokazCzytelnikow)
-                        .addGap(202, 202, 202)
-                        .addComponent(IDfield, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton4))
+                        .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
+                                .addGap(55, 55, 55)
+                                .addComponent(pokazCzytelnikow)
+                                .addGap(200, 200, 200)
+                                .addComponent(IDfield, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(usunCzyt))
+                            .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
+                                .addComponent(filtr_ID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(filtr_ID1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ZakladkaCzytelnicyLayout.createSequentialGroup()
-                        .addComponent(filtr_ID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(filtr_ID1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 363, Short.MAX_VALUE)
-                        .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(edycjaButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addGap(337, 337, 337))
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(edycjaButton)
+                .addGap(254, 254, 254))
+            .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 1009, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         ZakladkaCzytelnicyLayout.setVerticalGroup(
             ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ZakladkaCzytelnicyLayout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(32, 32, 32)
                 .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(filtr_ID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(filtr_ID1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(ZakladkaCzytelnicyLayout.createSequentialGroup()
-                        .addComponent(edycjaButton, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)))
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(edycjaButton, javax.swing.GroupLayout.DEFAULT_SIZE, 54, Short.MAX_VALUE)
+                    .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(filtr_ID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(filtr_ID1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(ZakladkaCzytelnicyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(pokazCzytelnikow)
                     .addComponent(IDfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4))
+                    .addComponent(usunCzyt))
                 .addGap(26, 26, 26))
         );
 
@@ -1877,6 +2197,8 @@ public class BibliotekaApp extends javax.swing.JFrame {
             }
         });
 
+        jButton5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton5.setForeground(new java.awt.Color(0, 51, 204));
         jButton5.setText("Dodaj Książkę");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1884,9 +2206,18 @@ public class BibliotekaApp extends javax.swing.JFrame {
             }
         });
 
-        jButton7.setText("Dodaj Egzemplarz");
-        jButton7.setEnabled(false);
+        dodajEgzButton.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        dodajEgzButton.setForeground(new java.awt.Color(0, 153, 153));
+        dodajEgzButton.setText("Dodaj Egzemplarz");
+        dodajEgzButton.setEnabled(false);
+        dodajEgzButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dodajEgzButtonActionPerformed(evt);
+            }
+        });
 
+        books_details.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        books_details.setForeground(new java.awt.Color(204, 148, 62));
         books_details.setText("Szczegóły");
         books_details.setEnabled(false);
         books_details.addActionListener(new java.awt.event.ActionListener() {
@@ -1897,7 +2228,14 @@ public class BibliotekaApp extends javax.swing.JFrame {
 
         ID_books_field.setText("ID");
 
-        jButton10.setText("jButton10");
+        usunKsiazke.setForeground(new java.awt.Color(255, 102, 102));
+        usunKsiazke.setText("Usuń książkę");
+        usunKsiazke.setEnabled(false);
+        usunKsiazke.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                usunKsiazkeActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout ZakladkaKsiazkiLayout = new javax.swing.GroupLayout(ZakladkaKsiazki);
         ZakladkaKsiazki.setLayout(ZakladkaKsiazkiLayout);
@@ -1912,12 +2250,12 @@ public class BibliotekaApp extends javax.swing.JFrame {
                         .addGap(200, 200, 200)
                         .addComponent(ID_books_field, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton10))
+                        .addComponent(usunKsiazke))
                     .addGroup(ZakladkaKsiazkiLayout.createSequentialGroup()
-                        .addGap(358, 358, 358)
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(410, 410, 410)
+                        .addComponent(jButton5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton7)
+                        .addComponent(dodajEgzButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(books_details, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1925,18 +2263,18 @@ public class BibliotekaApp extends javax.swing.JFrame {
         ZakladkaKsiazkiLayout.setVerticalGroup(
             ZakladkaKsiazkiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ZakladkaKsiazkiLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
+                .addGap(32, 32, 32)
                 .addGroup(ZakladkaKsiazkiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
-                    .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(dodajEgzButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(books_details, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 55, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(ZakladkaKsiazkiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(pokazKsiazki)
                     .addComponent(ID_books_field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton10))
+                    .addComponent(usunKsiazke))
                 .addGap(26, 26, 26))
         );
 
@@ -2040,10 +2378,20 @@ public class BibliotekaApp extends javax.swing.JFrame {
         //IDfield.setText(tmp);}
     }//GEN-LAST:event_TabelaCzytelnicyKeyPressed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        b.DeleteCzytelnikId(IDfield.getText());
+    private void usunCzytActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usunCzytActionPerformed
+         int row = TabelaCzytelnicy.getSelectedRow();
+         String tmp = TabelaCzytelnicy.getValueAt(row, 0).toString()+" "+TabelaCzytelnicy.getValueAt(row, 1).toString()+" "+TabelaCzytelnicy.getValueAt(row, 2).toString();
+         
+        int potwierdzenie=JOptionPane.showConfirmDialog(this, "Usunąć: "+tmp+" ?", "Usunąć czytelnika?", JOptionPane.OK_CANCEL_OPTION);
+        if (potwierdzenie==0)
+        {
+            b.DeleteCzytelnikId(IDfield.getText());
+            pokazCzytelnikow.doClick();
+        }
+        usunCzyt.setEnabled(false);
+        IDfield.setText("ID");
         System.out.println("USUNIETO CZYTELNIKA");
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_usunCzytActionPerformed
 
     private void TabelaCzytelnicyMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabelaCzytelnicyMousePressed
          int row = TabelaCzytelnicy.getSelectedRow();
@@ -2051,7 +2399,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
          selectedPesel = TabelaCzytelnicy.getValueAt(row, 3).toString();
         IDfield.setText(tmp);
         edycjaButton.setEnabled(true);
-       
+       usunCzyt.setEnabled(true);
     }//GEN-LAST:event_TabelaCzytelnicyMousePressed
 
     private void TabelaCzytelnicyKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TabelaCzytelnicyKeyReleased
@@ -2220,7 +2568,8 @@ public class BibliotekaApp extends javax.swing.JFrame {
     }//GEN-LAST:event_user_edycjaActionPerformed
 
     private void pokazKsiazkiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pokazKsiazkiActionPerformed
-        SelectBooksToTable(b.selectBooksToTable());       
+        SelectBooksToTable(b.selectBooksToTable());
+        
     }//GEN-LAST:event_pokazKsiazkiActionPerformed
 
     private void user_closeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_user_closeActionPerformed
@@ -2282,9 +2631,10 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private void TabelaBooksMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TabelaBooksMousePressed
         int row = TabelaBooks.getSelectedRow();
          String tmp = TabelaBooks.getValueAt(row, 0).toString();
-         //selectedPesel = TabelaCzytelnicy.getValueAt(row, 3).toString();
+        usunKsiazke.setEnabled(true);
         ID_books_field.setText(tmp);
         books_details.setEnabled(true);
+        dodajEgzButton.setEnabled(true);
     }//GEN-LAST:event_TabelaBooksMousePressed
 
     private void gatunekActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gatunekActionPerformed
@@ -2452,10 +2802,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
         }
         else if (id_ulica.isEmpty()) {
             System.out.println("pusta ulica"); }
-        else    if (lista_ulice.getSelectedItem().equals(" Inna...")) {
-            System.out.println("ulica nie z listy");
-            if (b.selectCountUlica(id_ulica)==0) {b.insertUlica(id_ulica);}
-        }
+        
 
         else    {
             if (username.isEmpty() )
@@ -2474,7 +2821,12 @@ public class BibliotekaApp extends javax.swing.JFrame {
                     tmp = b.selectCountUniwersalny(email, "czytelnicy", "email");
                     if (tmp!=0) System.out.println("taki E-MAIL juz istnieje");
                     else {
-
+                        if (lista_ulice.getSelectedItem().equals(" Inna..."))
+                            {
+                            System.out.println("ulica nie z listy");
+                                System.out.println(id_ulica);
+                            if (b.selectCountUlica(id_ulica)==0) {b.insertUlica(id_ulica);}
+                            }
                         ulica  = b.selectUlicaWhereUlica(id_ulica);
                         String s="";
                         s=id_miasto.substring(id_miasto.lastIndexOf(' ') + 1);
@@ -2484,13 +2836,14 @@ public class BibliotekaApp extends javax.swing.JFrame {
                         b.insertCzytelnik(imie, nazwisko, pesel, DOB, email, username, hash, miasto, ulica, numer_domu, telefon);
 
                         System.out.println("dodano czytelnika");
+                        
                         String [][]dodane = new String[1][10];
 
                         dodane = b.selectCzytelnicyZAdresem_WherePESEL(pesel);
                         //System.out.println(Arrays.deepToString(dodane));
                         String dodany = "ID: " + dodane[0][0] + "\nImie: " + dodane[0][1]+ "\nNazwisko: " + dodane[0][2]+ "\nPesel: " + dodane[0][3]+ "\nData Urodzenia: " + dodane[0][4]+ "\neMail: " + dodane[0][5]+ "\nUżytkownik: " + dodane[0][6]+ "\nHasło: " +password+ "\nAdres: " + dodane[0][8]+ "\nTelefon: " + dodane[0][9];
                         //System.out.println(dodany);
-
+                        
                         JOptionPane.showMessageDialog(this, "Dodano nowego czytelnika:\n\n"+dodany, "Dodano czytelnika", JOptionPane.INFORMATION_MESSAGE);
                         oknotest.setVisible(false);
                         pokazCzytelnikow.doClick();
@@ -2622,31 +2975,116 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
         String nazwisko=nazwiskoAutorAdd.getText();
         String imie=imieAutorAdd.getText();
-        jhjhjhj
+      
                 
-//        if (Pattern.matches("^[0-9]{2}-[0-9]{3}$", kod)&& !miasto.isEmpty())  {
-//            if (b.selectCountMiasto(kod)!=0) {
-//                System.out.println("taki kod pocztowy juz jest w bazie");
-//                
-//                String miasto2=b.selectMiastoWhereKod(kod);
-//                czyt_add_miasto.setText(miasto2+" "+kod);
-//            }
-//            else {b.insertMiasto(miasto, kod); modelboxmiasta.addElement(miasto+" "+kod);
-//            czyt_add_miasto.setText(miasto+" "+kod);}
-//            dodajMiasto.setVisible(false);
-//            miastoADD.setText("");
-//            kodADD.setText("");
-//            }
-//        else {
-//            System.out.println("bledne dane");
-//            if (!miasto.isEmpty()) { kodADD.requestFocus(); kodADD.selectAll(); }
-//            else miastoADD.requestFocus();
-//        }
+        if (!nazwisko.isEmpty() && !imie.isEmpty())  {
+            if (b.selectCountUniwersal(nazwisko, "autorzy", "nazwisko")!=0) {
+                System.out.println("taki autor juz jest w bazie");
+                List lista1 = new ArrayList();
+                lista1=b.selectSzukaneWhereWarunek("imie", "autorzy", "nazwisko", nazwisko);
+                System.out.println(lista1.size());
+                boolean czyImie=false;
+                for (int i=0; i<lista1.size(); i++)
+                {
+                    if (lista1.get(i).equals(imie)) czyImie=true;
+                }
+                if (czyImie==true)
+                {
+                    System.out.println("imie tez istnieje");
+                    //nie dodawaj autora
+                    JOptionPane.showMessageDialog(this, "Taki Autor juz istnieje:\n\n"+nazwisko+" "+imie, "Nie dodano autora", JOptionPane.INFORMATION_MESSAGE);
+                    dodajAutora.setVisible(false);
+                    autorNew.setText(nazwisko+" "+imie);
+                    oknoDodajBook.toFront();
+                }
+                else {
+                    System.out.println("nazwisko jest, ale z innym imieniem");
+                    //dodaj autora
+                    b.insertAutor(nazwisko, imie);
+                    dodajAutora.setVisible(false);
+                    autorNew.setText(nazwisko+" "+imie);
+                    oknoDodajBook.toFront();
+                    modelboxautorzy.addElement(nazwisko+" "+imie);
+                    }
+            
+               }
+            else b.insertAutor(nazwisko, imie);
+            dodajAutora.setVisible(false);
+            autorNew.setText(nazwisko+" "+imie);
+            oknoDodajBook.toFront();
+            modelboxautorzy.addElement(nazwisko+" "+imie);
+           
+        }
+        else System.out.println("puste dane");
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         dodajAutora.dispose();
     }//GEN-LAST:event_jButton15ActionPerformed
+
+    private void usunKsiazkeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usunKsiazkeActionPerformed
+        int row = TabelaBooks.getSelectedRow();
+        String selectedTytul = TabelaBooks.getValueAt(row, 1).toString();
+        int potwierdzenie=JOptionPane.showConfirmDialog(this, "Usunąć: "+selectedTytul+" ?", "Usunąć książkę?", JOptionPane.OK_CANCEL_OPTION);
+        if (potwierdzenie==0)
+        {
+            b.DeleteOneUniwersalWhereID(ID_books_field.getText(), "ksiazki", "id_ksiazki");
+            pokazKsiazki.doClick();
+        }
+    }//GEN-LAST:event_usunKsiazkeActionPerformed
+
+    private void dodajButtonNew1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dodajButtonNew1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_dodajButtonNew1ActionPerformed
+
+    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton16ActionPerformed
+
+    private void autorNew1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autorNew1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_autorNew1ActionPerformed
+
+    private void listLokalizacjaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listLokalizacjaFocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_listLokalizacjaFocusLost
+
+    private void listLokalizacjaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listLokalizacjaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_listLokalizacjaActionPerformed
+
+    private void listStanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listStanActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_listStanActionPerformed
+
+    private void listWydawnictwoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listWydawnictwoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_listWydawnictwoActionPerformed
+
+    private void oknoDodajEgzemplarzWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_oknoDodajEgzemplarzWindowActivated
+        // TODO add your handling code here:
+    }//GEN-LAST:event_oknoDodajEgzemplarzWindowActivated
+
+    private void autorNew2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autorNew2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_autorNew2ActionPerformed
+
+    private void autorNew3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autorNew3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_autorNew3ActionPerformed
+
+    private void dodajEgzButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dodajEgzButtonActionPerformed
+        oknoDodajEgzemplarz.setLocation(dim.width/2-(oknoDodajEgzemplarz.getSize().width)/2, dim.height/2-oknoDodajEgzemplarz.getSize().height/2);
+        listaLokalizacje();
+//        listaStany();
+//        listaWydawnictwa();
+        
+        dzialNew.setText("wybierz z listy");
+        autorNew.setText("wybierz z listy");
+        gatunekNew.setText("wybierz z listy");
+        kategoriaNew.setText("wybierz z listy");
+       oknoDodajBook.setVisible(true);
+    }//GEN-LAST:event_dodajEgzButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -2654,15 +3092,30 @@ public class BibliotekaApp extends javax.swing.JFrame {
     public static void main(String args[]) throws FileNotFoundException {
 
         jezyk();
-        System.out.println(firstLetterCaps("dsDsd jsHHs"));
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new BibliotekaApp().setVisible(true);
-                
-                
+                new BibliotekaApp().setVisible(true);   
             }
         });
+        
+//        Thread watek = new Thread(new Runnable() {
+//             int i=0;
+//             //DateTime dt= new DateTime();
+//             ScheduledExecutorService exec=Executors.newScheduledThreadPool(1);
+//             Runnable cos = new Runnable() {
+//                 public void run() {
+//                     System.out.println("watek 2: "+i);
+//                        i++;
+//                        System.out.println(System.currentTimeMillis());
+//                 }
+//             };
+//         public void run() {
+//             exec.scheduleAtFixedRate(cos, 0, 5, TimeUnit.SECONDS);
+//             
+//            }
+//        });
+//        watek.start();
 
        // b.closeConnection(); 
         
@@ -2679,6 +3132,9 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JPanel ZakladkaKsiazki;
     private javax.swing.JTextField autor;
     private javax.swing.JTextField autorNew;
+    private javax.swing.JTextField autorNew1;
+    private javax.swing.JTextField autorNew2;
+    private javax.swing.JTextField autorNew3;
     private javax.swing.JFrame booksDetails;
     private javax.swing.JButton books_close;
     private javax.swing.JButton books_details;
@@ -2697,26 +3153,28 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JFrame dodajAutora;
     private javax.swing.JButton dodajButton;
     private javax.swing.JButton dodajButtonNew;
+    private javax.swing.JButton dodajButtonNew1;
+    private javax.swing.JButton dodajEgzButton;
     private javax.swing.JFrame dodajMiasto;
     private javax.swing.JTextField dzial;
     private javax.swing.JTextField dzialNew;
+    private javax.swing.JTextField dzialNew1;
     private javax.swing.JButton edycjaButton;
     private javax.swing.JTextField filtr_ID;
     private javax.swing.JTextField filtr_ID1;
     private javax.swing.JTextField gatunek;
     private javax.swing.JTextField gatunekNew;
+    private javax.swing.JTextField gatunekNew1;
     private javax.swing.JTextField imieAutorAdd;
-    private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton15;
+    private javax.swing.JButton jButton16;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
@@ -2750,12 +3208,19 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
+    private javax.swing.JLabel jLabel38;
+    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel41;
+    private javax.swing.JLabel jLabel42;
+    private javax.swing.JLabel jLabel43;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel51;
     private javax.swing.JLabel jLabel52;
+    private javax.swing.JLabel jLabel53;
+    private javax.swing.JLabel jLabel54;
+    private javax.swing.JLabel jLabel55;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
@@ -2768,6 +3233,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -2776,8 +3242,10 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField kategoria;
     private javax.swing.JTextField kategoriaNew;
+    private javax.swing.JTextField kategoriaNew1;
     private javax.swing.JTextField kodADD;
     private javax.swing.JComboBox<String> listAutorNew;
     private javax.swing.JComboBox<String> listDzial;
@@ -2786,12 +3254,16 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> listGatunekNew;
     private javax.swing.JComboBox<String> listKategoria;
     private javax.swing.JComboBox<String> listKategoriaNew;
+    private javax.swing.JComboBox<String> listLokalizacja;
+    private javax.swing.JComboBox<String> listStan;
+    private javax.swing.JComboBox<String> listWydawnictwo;
     private javax.swing.JComboBox<String> lista_miasta;
     private javax.swing.JComboBox<String> lista_ulice;
     private javax.swing.JFrame loading;
     private javax.swing.JTextField miastoADD;
     private javax.swing.JTextField nazwiskoAutorAdd;
     private javax.swing.JFrame oknoDodajBook;
+    private javax.swing.JFrame oknoDodajEgzemplarz;
     private javax.swing.JFrame oknotest;
     private javax.swing.JTextArea opis;
     private javax.swing.JTextArea opisNew;
@@ -2799,7 +3271,9 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JButton pokazKsiazki;
     private javax.swing.JTextField title;
     private javax.swing.JTextField tittleNew;
+    private javax.swing.JTextField tittleNew1;
     private javax.swing.JLabel tytul;
+    private javax.swing.JLabel tytul1;
     private javax.swing.JFrame userDetails;
     private javax.swing.JTextField user_DOB;
     private javax.swing.JTextField user_city;
@@ -2814,6 +3288,8 @@ public class BibliotekaApp extends javax.swing.JFrame {
     private javax.swing.JTextField user_street;
     private javax.swing.JTextField user_surname;
     private javax.swing.JTextField user_username;
+    private javax.swing.JButton usunCzyt;
+    private javax.swing.JButton usunKsiazke;
     private javax.swing.JTabbedPane zakladki;
     // End of variables declaration//GEN-END:variables
 }

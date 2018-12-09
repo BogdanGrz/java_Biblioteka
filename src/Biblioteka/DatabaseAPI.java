@@ -16,6 +16,7 @@ import model.Dzial;
 import model.Gatunek;
 import model.Kategoria;
 import model.Ksiazka;
+import model.Lokalizacja;
 import model.Wypozyczenie;
 import model.Miasto;
 import model.Ulica;
@@ -24,7 +25,7 @@ public class DatabaseAPI {
 
     public static final String DRIVER = "org.sqlite.JDBC";
     public static final String DB_URL = "jdbc:sqlite:biblioteka.db";
-
+    //jdbc:sqlite:C:/Users/Bodzio/Desktop/biblioteka.db  - przyklad linku do innego katalogu z baza
     private Connection conn;
     private Statement stat;
 
@@ -58,7 +59,10 @@ public class DatabaseAPI {
         String createKategorie = "CREATE TABLE IF NOT EXISTS kategorie (id_kategori INTEGER PRIMARY KEY AUTOINCREMENT, nazwa_kat varchar(100))";
         String createWydawnictwa = "CREATE TABLE IF NOT EXISTS wydawnictwa (id_wydawnictwa INTEGER PRIMARY KEY AUTOINCREMENT, nazwa_wyd varchar(100))";
         String createKsiazki = "CREATE TABLE IF NOT EXISTS ksiazki (id_ksiazki INTEGER PRIMARY KEY AUTOINCREMENT, tytul varchar(255), autor int, autor2 int, autor3 int, id_dzial int, id_gatunek int, id_kat int DEFAULT 1, opis TEXT)";
-        String createEgzemplarze = "CREATE TABLE IF NOT EXISTS egzemplarze (id_egzemplarza INTEGER PRIMARY KEY AUTOINCREMENT, id_ksiazki int, lokalizacja varchar(255), stan varchar(255), id_wyd int, rok_wyd varchar(10), jezyk varchar(100))";
+        String createEgzemplarze = "CREATE TABLE IF NOT EXISTS egzemplarze (id_egzemplarza INTEGER PRIMARY KEY AUTOINCREMENT, id_ksiazki int, lokalizacja int, stan int, id_wyd int, rok_wyd varchar(4), jezyk varchar(100))";
+        String createLokalizacje = "CREATE TABLE IF NOT EXISTS lokalizacje (id_lokalizacji INTEGER PRIMARY KEY AUTOINCREMENT, nazwa_lokalizacji varchar(255));";
+        String createStany = "CREATE TABLE IF NOT EXISTS stany (id_stanu INTEGER PRIMARY KEY AUTOINCREMENT, nazwa_stanu varchar(255));";
+        
         try {
             stat.execute(createCzytelnicy);
             stat.execute(createKsiazki);
@@ -71,6 +75,8 @@ public class DatabaseAPI {
             stat.execute(createWydawnictwa);
             stat.execute(createEgzemplarze);
             stat.execute(createMiasta);
+            stat.execute(createLokalizacje);
+            stat.execute(createStany);
         } catch (SQLException e) {
             System.err.println("Blad przy tworzeniu tabeli");
             e.printStackTrace();
@@ -174,6 +180,20 @@ public class DatabaseAPI {
             prepStmt.execute();
         } catch (SQLException e) {
             System.err.println("Blad przy dodawaniu miasta");
+            return false;
+        }
+        return true;
+    }
+      
+      public boolean insertAutor(String nazwisko, String imie) {
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into autorzy values (NULL, ?, ?);");
+            prepStmt.setString(1, nazwisko);
+            prepStmt.setString(2, imie);
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu autora do bazy");
             return false;
         }
         return true;
@@ -413,6 +433,60 @@ public class DatabaseAPI {
         return id;
     }      
     
+    public int selectCountUniwersal(String szukana, String tabela, String kolumna) {
+        String select="Select COUNT ("+kolumna+") as kod from "+tabela+" where "+kolumna+" LIKE '"+szukana+"';";
+        System.out.println(select);
+        int ile=0;
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                ile = result.getInt("kod");           
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        return ile;
+    }      
+    
+    public String selectSzukanaWhereWarunek(String szukana, String tabela, String kolumna, String warunek) {
+        String select="Select "+szukana+" from "+tabela+" where "+kolumna+" LIKE '"+warunek+"';";
+        System.out.println(select);
+        String wynik="";
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                wynik = result.getString(szukana);           
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            
+        }
+        return wynik;
+    }    
+    
+    public List selectSzukaneWhereWarunek(String szukana, String tabela, String kolumna, String warunek) {
+        String select="Select "+szukana+" from "+tabela+" where "+kolumna+" LIKE '"+warunek+"';";
+        List lista1 = new ArrayList();
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                lista1.add(result.getString(szukana)); //0
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Blad przy select SZUKANE where warunek ");
+            return null;
+        }
+        
+        return lista1;
+    }
+    
+    
+    
     public List<Ulica> selectUlice() {
         List<Ulica> ulice = new LinkedList<Ulica>();
         String select="SELECT * from ulice ORDER BY ulica ASC";
@@ -501,6 +575,29 @@ public class DatabaseAPI {
         }
         return Dzialy;
     } 
+    
+    public List<Lokalizacja> selectLokalizacje() {
+        List<Lokalizacja> Lokalizacje = new LinkedList<Lokalizacja>();
+        String select="SELECT * from lokalizacje ORDER BY nazwa_lokalizacji COLLATE NOCASE ASC";
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            int id;
+            String Lokalizacja;
+            while(result.next()) {
+                id = result.getInt("id_lokalizacji");           
+                Lokalizacja = result.getString("nazwa_lokalizacji");
+
+                Lokalizacje.add(new Lokalizacja(id, Lokalizacja));
+    
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return Lokalizacje;
+    } 
+    
     
     public String[][] selectCzytelnicyToArray() {
         String select="SELECT * FROM czytelnicy";
@@ -786,6 +883,20 @@ public class DatabaseAPI {
         return true;
     }
     
+    
+    public boolean DeleteOneUniwersalWhereID(String where, String from, String kolumna)  {
+        String komenda;
+        komenda = "DELETE FROM "+from+" WHERE "+kolumna+"="+where;
+        System.out.println(komenda);
+        try {
+            stat.executeUpdate(komenda);
+        } catch (SQLException e) {
+            System.err.println("Blad przy usuwaniu z tabeli");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 
     public List<Ksiazka> selectKsiazki() {
         List<Ksiazka> ksiazki = new LinkedList<Ksiazka>();
