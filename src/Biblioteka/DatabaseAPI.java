@@ -19,7 +19,9 @@ import model.Ksiazka;
 import model.Lokalizacja;
 import model.Wypozyczenie;
 import model.Miasto;
+import model.Stan;
 import model.Ulica;
+import model.Wydawnictwo;
 
 public class DatabaseAPI {
 
@@ -50,7 +52,7 @@ public class DatabaseAPI {
 
     public boolean createTables()  {
         String createCzytelnicy = "CREATE TABLE IF NOT EXISTS czytelnicy (id_czytelnika INTEGER PRIMARY KEY AUTOINCREMENT, imie varchar ( 255 ) NOT NULL, nazwisko varchar ( 255 ) NOT NULL, pesel varchar ( 11 ) NOT NULL UNIQUE, DOB varchar(12) NOT NULL, email varchar ( 40 ) UNIQUE, username varchar ( 40 ) UNIQUE, password varchar NOT NULL, zadluzenie REAL DEFAULT 0, miasto_id INTEGER, ulica_id INTEGER, numer_domu varchar (10), telefon varchar (20))";
-        String createWypozyczenia = "CREATE TABLE IF NOT EXISTS wypozyczenia (id_wypozycz INTEGER PRIMARY KEY AUTOINCREMENT, id_czytelnika int, id_ksiazki int)";
+        String createWypozyczenia = "CREATE TABLE IF NOT EXISTS wypozyczenia (id_wypozycz INTEGER PRIMARY KEY AUTOINCREMENT, id_czytelnika int, id_egzemplarza int, data_wypozyczenia VARCHAR(10), data_planowana VARCHAR(10), data_zwrotu VARCHAR(10))";
         String createUlice = "CREATE TABLE IF NOT EXISTS ulice (id_ulice INTEGER PRIMARY KEY AUTOINCREMENT, ulica varchar(255), numer varchar(255))";
         String createMiasta = "CREATE TABLE IF NOT EXISTS miasta (id_miasta INTEGER PRIMARY KEY AUTOINCREMENT, miasto varchar(255), kod varchar(6))";
         String createAutorzy = "CREATE TABLE IF NOT EXISTS autorzy (id_autora INTEGER PRIMARY KEY AUTOINCREMENT, nazwisko varchar(100), imie varchar(30))";
@@ -142,6 +144,25 @@ public class DatabaseAPI {
         }
         return true;
     }
+    
+    public boolean insertEgzemplarz(int id_ksiazki, int lokalizacja, int stan, int wydawnictwo, String rok, String jezyk) {
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into egzemplarze values (NULL, ?, ?, ?, ?, ?, ?);");
+            prepStmt.setInt(1, id_ksiazki);
+            prepStmt.setInt(2, lokalizacja);
+            prepStmt.setInt(3, stan);
+            prepStmt.setInt(4, wydawnictwo);
+            prepStmt.setString(5, rok);
+            prepStmt.setString(6, jezyk);
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu egzemplarza do bazy");
+            return false;
+        }
+        return true;
+    }
+    
     
 
     public boolean insertWypozycz(int idCzytelnik, int idKsiazka) {
@@ -395,6 +416,25 @@ public class DatabaseAPI {
         return id;
     }     
      
+     public int selectMaxIDEgzemplarze() {
+        String select="Select MAX (id_egzemplarza) AS Result from egzemplarze";
+        System.out.println(select);
+        int id=0;
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                id = result.getInt("Result");           
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("blad SELECT MAX ID egzemplarze");
+            return 0;
+        }
+        return id;
+    }     
+     
+     
      public int selectCountUniwersalny(String co, String gdzie_tab, String gdzie_col) {
         String select="Select COUNT ("+gdzie_col+") as ile from "+gdzie_tab+" where "+gdzie_col+" LIKE '"+co+"';";
         System.out.println(select);
@@ -599,6 +639,54 @@ public class DatabaseAPI {
     } 
     
     
+    public List<Stan> selectStany() {
+        List<Stan> Stany = new LinkedList<Stan>();
+        String select="SELECT * from stany ORDER BY nazwa_stanu COLLATE NOCASE ASC";
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            int id;
+            String Stan;
+            while(result.next()) {
+                id = result.getInt("id_stanu");           
+                Stan = result.getString("nazwa_stanu");
+
+                Stany.add(new Stan(id, Stan));
+    
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return Stany;
+    } 
+    
+    
+    public List<Wydawnictwo> selectWydawnictwa() {
+        List<Wydawnictwo> Wydawnictwa = new LinkedList<Wydawnictwo>();
+        String select="SELECT * from wydawnictwa ORDER BY nazwa_wyd COLLATE NOCASE ASC";
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            int id;
+            String Wydawnictwo;
+            while(result.next()) {
+                id = result.getInt("id_wydawnictwa");           
+                Wydawnictwo = result.getString("nazwa_wyd");
+
+                Wydawnictwa.add(new Wydawnictwo(id, Wydawnictwo));
+    
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return Wydawnictwa;
+    } 
+    
+    
+    
+    
     public String[][] selectCzytelnicyToArray() {
         String select="SELECT * FROM czytelnicy";
         List lista1 = new ArrayList();
@@ -642,8 +730,10 @@ public class DatabaseAPI {
         return tmp;
     }
     
-    public String[][] selectCzytelnicyZAdresem() {
-        String select="SELECT czytelnicy.id_czytelnika, czytelnicy.imie, czytelnicy.nazwisko, czytelnicy.pesel, czytelnicy.DOB, czytelnicy.username, czytelnicy.email, ulice.ulica, czytelnicy.numer_domu, miasta.miasto, miasta.kod, czytelnicy.telefon FROM czytelnicy INNER JOIN ulice ON ulice.id_ulice = czytelnicy.ulica_id INNER JOIN miasta ON miasta.id_miasta = czytelnicy.miasto_id;";
+    public String[][] selectCzytelnicyZAdresem(String a,String be,String c,String d,String ee,String f,String g,String h,String ii) {
+        String select="SELECT czytelnicy.id_czytelnika, czytelnicy.imie, czytelnicy.nazwisko, czytelnicy.pesel, czytelnicy.DOB, czytelnicy.username, czytelnicy.email, ulice.ulica, czytelnicy.numer_domu, miasta.miasto, miasta.kod, czytelnicy.telefon "
+                + "FROM czytelnicy INNER JOIN ulice ON ulice.id_ulice = czytelnicy.ulica_id INNER JOIN miasta ON miasta.id_miasta = czytelnicy.miasto_id "
+                + "where czytelnicy.id_czytelnika like '"+a+"' AND czytelnicy.imie like '"+be+"' AND czytelnicy.nazwisko like '"+c+"' AND czytelnicy.pesel like '"+d+"' AND czytelnicy.DOB like '"+ee+"' AND czytelnicy.username like '"+f+"' AND czytelnicy.email like '"+g+"' AND (miasta.miasto like '"+h+"' OR ulice.ulica like '"+h+"' OR miasta.kod like '"+h+"') AND czytelnicy.telefon like '"+ii+"';";
         List lista1 = new ArrayList();
         System.out.println(select);
         try {
@@ -816,6 +906,34 @@ public class DatabaseAPI {
         return lista1;
     }
     
+    public List selectEgzemplarzByID(int id) {
+        //List<Czytelnik> czytelnicyByPESEL = new LinkedList<Czytelnik>();
+        String select="select egzemplarze.id_egzemplarza, ksiazki.tytul, autorzy.nazwisko, autorzy.imie, lokalizacje.nazwa_lokalizacji, stany.nazwa_stanu, wydawnictwa.nazwa_wyd, egzemplarze.rok_wyd, egzemplarze.jezyk FROM egzemplarze INNER JOIN ksiazki ON egzemplarze.id_ksiazki=ksiazki.id_ksiazki JOIN autorzy ON ksiazki.autor=autorzy.id_autora JOIN lokalizacje ON egzemplarze.lokalizacja=lokalizacje.id_lokalizacji JOIN stany ON egzemplarze.stan=stany.id_stanu JOIN wydawnictwa ON egzemplarze.id_wyd=wydawnictwa.id_wydawnictwa where ksiazki.id_ksiazki like '"+id+"';";
+        List lista1 = new ArrayList();
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                lista1.add(result.getInt("id_egzemplarza")); //0
+                lista1.add(result.getString("tytul"));       //1
+                lista1.add(result.getString("nazwisko"));   //2
+                lista1.add(result.getString("imie"));      //3
+                lista1.add(result.getString("nazwa_lokalizacji"));        //4
+                lista1.add(result.getString("nazwa_stanu"));   //5
+                lista1.add(result.getString("nazwa_wyd"));      //6
+                lista1.add(result.getString("rok_wyd"));      //7
+                lista1.add(result.getString("jezyk"));      //8
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Blad select egzemplarz where ID");
+            return null;
+        }
+        
+        return lista1;
+    }
+    
+    
     public boolean updateCzytelnikImie(String imie, int id)  {
         String komenda;
         komenda = "UPDATE czytelnicy SET imie='"+imie+"' WHERE id_czytelnika="+id;
@@ -861,6 +979,23 @@ public class DatabaseAPI {
             stat.executeUpdate(komenda);
         } catch (SQLException e) {
             System.err.println("Blad przy zmianie w tabeli (edit book)");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean editEgzemplarz(int id_egzemplarza, int lok, int sta, int wyd, String rok, String jezyk)  {
+        System.out.println("WYWOLANIE EDIT egzemplarz");
+        String komenda;
+       
+        komenda = "UPDATE egzemplarze SET lokalizacja='"+lok+"', stan='"+sta+"', id_wyd='"+wyd+"',rok_wyd='"+rok+"',jezyk='"+jezyk+"' WHERE id_egzemplarza="+id_egzemplarza;
+        
+        System.out.println(komenda);
+        try {
+            stat.executeUpdate(komenda);
+        } catch (SQLException e) {
+            System.err.println("Blad przy zmianie w tabeli (edit egzemplarz)");
             e.printStackTrace();
             return false;
         }
@@ -919,8 +1054,10 @@ public class DatabaseAPI {
     }
     
     
-    public String[][] selectBooksToTable() {
-        String select="select ksiazki.id_ksiazki, ksiazki.tytul, autorzy.nazwisko, autorzy.imie, dzialy.nazwa_dzi, gatunki.nazwa_gatunku, kategorie.nazwa_kat FROM ksiazki INNER JOIN autorzy ON ksiazki.autor=autorzy.id_autora INNER JOIN dzialy ON ksiazki.id_dzial=dzialy.id_dzialu INNER JOIN gatunki ON gatunki.id_gatunku=ksiazki.id_gatunek INNER JOIN kategorie ON ksiazki.id_kat=kategorie.id_kategori;";
+    public String[][] selectBooksToTable(String a, String be, String c, String d, String ee, String f) {
+        String select="select ksiazki.id_ksiazki, ksiazki.tytul, autorzy.nazwisko, autorzy.imie, dzialy.nazwa_dzi, gatunki.nazwa_gatunku, kategorie.nazwa_kat "
+                + "FROM ksiazki INNER JOIN autorzy ON ksiazki.autor=autorzy.id_autora INNER JOIN dzialy ON ksiazki.id_dzial=dzialy.id_dzialu INNER JOIN gatunki ON gatunki.id_gatunku=ksiazki.id_gatunek INNER JOIN kategorie ON ksiazki.id_kat=kategorie.id_kategori "
+                + "where ksiazki.id_ksiazki like '"+a+"' AND ksiazki.tytul like '"+be+"' AND (autorzy.imie like '"+c+"' OR autorzy.nazwisko like '"+c+"') AND dzialy.nazwa_dzi like '"+d+"' AND gatunki.nazwa_gatunku like '"+ee+"' AND kategorie.nazwa_kat like '"+f+"';";
         List lista1 = new ArrayList();
         System.out.println(select);
         try {
@@ -951,6 +1088,91 @@ public class DatabaseAPI {
              tmp[i][3]=(String)lista1.get(j+4);
              tmp[i][4]=(String)lista1.get(j+5);
              tmp[i][5]=(String)lista1.get(j+6);
+         }
+        return tmp;
+    }
+    
+    
+    public String[][] selectWypozyczeniaToTable(String a, String be, String c, String d, String ee, String f, String g) {
+        String select="select wypozyczenia.id_wypozycz, ksiazki.tytul, autorzy.nazwisko, autorzy.imie, czytelnicy.nazwisko as czy_naz, czytelnicy.imie as czy_imi, wypozyczenia.data_wypozyczenia, wypozyczenia.data_planowana, wypozyczenia.data_zwrotu "
+                + "FROM wypozyczenia JOIN egzemplarze ON wypozyczenia.id_egzemplarza=egzemplarze.id_egzemplarza JOIN czytelnicy ON wypozyczenia.id_czytelnika=czytelnicy.id_czytelnika JOIN ksiazki ON ksiazki.id_ksiazki = egzemplarze.id_ksiazki JOIN autorzy ON autorzy.id_autora = ksiazki.autor "
+                + "where wypozyczenia.id_wypozycz like '"+a+"' AND ksiazki.tytul like '"+be+"' AND (autorzy.imie like '"+c+"' OR autorzy.nazwisko like '"+c+"') AND (czytelnicy.nazwisko like '"+d+"' OR czytelnicy.imie like '"+d+"') AND wypozyczenia.data_wypozyczenia like '"+ee+"' AND wypozyczenia.data_planowana like '"+f+"' AND wypozyczenia.data_zwrotu like '"+g+"';";
+        List lista1 = new ArrayList();
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                lista1.add(result.getInt("id_wypozycz")); //0
+                lista1.add(result.getString("tytul"));       //1
+                lista1.add(result.getString("nazwisko"));   //2
+                lista1.add(result.getString("imie"));      //3
+                lista1.add(result.getString("czy_naz"));        //4
+                lista1.add(result.getString("czy_imi"));   //5
+                lista1.add(result.getString("data_wypozyczenia"));      //6  
+                lista1.add(result.getString("data_planowana"));      //7  
+                lista1.add(result.getString("data_zwrotu"));      //8  
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        int rozmiar=lista1.size();
+        System.out.println(rozmiar);
+         String[][] tmp = new String[rozmiar/9][7];
+         for (int i=0, j=0; i<(rozmiar/9); i++, j+=9)
+         {
+             System.out.println(i+" ");
+             tmp[i][0]=String.format("%08d", lista1.get(j));
+             tmp[i][1]=(String)lista1.get(j+1);
+             String tempo=lista1.get(j+2)+"  "+lista1.get(j+3);
+             tmp[i][2]=tempo;
+             String tempo2=lista1.get(j+4)+"  "+lista1.get(j+5);
+             tmp[i][3]=tempo2;
+             tmp[i][4]=(String)lista1.get(j+6);
+             tmp[i][5]=(String)lista1.get(j+7);
+             tmp[i][6]=(String)lista1.get(j+8);
+         }
+        return tmp;
+    }
+    
+    
+    
+    public String[][] selectEgzemplarzeToTable(int id_ksiazki) {
+        String select="select egzemplarze.id_egzemplarza, ksiazki.tytul, autorzy.nazwisko, autorzy.imie, lokalizacje.nazwa_lokalizacji, stany.nazwa_stanu, wydawnictwa.nazwa_wyd, egzemplarze.rok_wyd, egzemplarze.jezyk FROM egzemplarze INNER JOIN ksiazki ON egzemplarze.id_ksiazki=ksiazki.id_ksiazki JOIN autorzy ON ksiazki.autor=autorzy.id_autora JOIN lokalizacje ON egzemplarze.lokalizacja=lokalizacje.id_lokalizacji JOIN stany ON egzemplarze.stan=stany.id_stanu JOIN wydawnictwa ON egzemplarze.id_wyd=wydawnictwa.id_wydawnictwa where ksiazki.id_ksiazki like '"+id_ksiazki+"';";
+        List lista1 = new ArrayList();
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                lista1.add(result.getInt("id_egzemplarza")); //0
+                lista1.add(result.getString("tytul"));       //1
+                lista1.add(result.getString("nazwisko"));   //2
+                lista1.add(result.getString("imie"));      //3
+                lista1.add(result.getString("nazwa_lokalizacji"));        //4
+                lista1.add(result.getString("nazwa_stanu"));   //5
+                lista1.add(result.getString("nazwa_wyd"));      //6
+                lista1.add(result.getString("rok_wyd"));      //7
+                lista1.add(result.getString("jezyk"));      //8
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        int rozmiar=lista1.size();
+        System.out.println(rozmiar);
+         String[][] tmp = new String[rozmiar/9][8];
+         for (int i=0, j=0; i<(rozmiar/9); i++, j+=9)
+         {
+             System.out.println(i+" ");
+             tmp[i][0]=String.format("%08d", lista1.get(j));
+             tmp[i][1]=(String)lista1.get(j+1);
+             String tempo=lista1.get(j+2)+"  "+lista1.get(j+3);
+             tmp[i][2]=tempo;
+             tmp[i][3]=(String)lista1.get(j+4);
+             tmp[i][4]=(String)lista1.get(j+5);
+             tmp[i][5]=(String)lista1.get(j+6);
+             tmp[i][6]=(String)lista1.get(j+7);
+             tmp[i][7]=(String)lista1.get(j+8);
          }
         return tmp;
     }
