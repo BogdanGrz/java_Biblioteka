@@ -220,6 +220,23 @@ public class DatabaseAPI {
         return true;
     }
       
+       public boolean insertWypozyczenie(int czytelnik, int egzemplarz, String dataWyp, String dataPla, String dataZwr) {
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into wypozyczenia values (NULL, ?, ?, ?, ?, ?);");
+            prepStmt.setInt(1, czytelnik);
+            prepStmt.setInt(2, egzemplarz);
+            prepStmt.setString(3, dataWyp);
+            prepStmt.setString(4, dataPla);
+            prepStmt.setString(5, dataZwr);
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu wypozyczenia do bazy");
+            return false;
+        }
+        return true;
+    }
+      
 
     
     
@@ -432,7 +449,25 @@ public class DatabaseAPI {
             return 0;
         }
         return id;
-    }     
+    }   
+     
+     public int selectMaxIDUniwersal(String kolumna, String tabela) {
+        String select="Select MAX ("+kolumna+") AS Result from "+tabela;
+        System.out.println(select);
+        int id=0;
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                id = result.getInt("Result");           
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("blad SELECT MAX ID "+ tabela);
+            return 0;
+        }
+        return id;
+    }
      
      
      public int selectCountUniwersalny(String co, String gdzie_tab, String gdzie_col) {
@@ -472,6 +507,39 @@ public class DatabaseAPI {
         }
         return id;
     }      
+    
+    public int selectSzukanaWhereWarunekReturnINT(String szukana, String tabela, String kolumna, int warunek) {
+        String select="Select "+szukana+" from "+tabela+" where "+kolumna+" LIKE '"+warunek+"';";
+        System.out.println(select);
+        int wynik=100;
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                wynik = result.getInt(szukana);           
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            
+        }
+        return wynik;
+    } 
+    
+    public int selectID_WYP_with_where2(int id_egz) {
+        String select="SELECT id_wypozycz from wypozyczenia where data_zwrotu = \"\" AND id_egzemplarza="+id_egz+";";
+        System.out.println(select);
+        int wynik=0;
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                wynik = result.getInt("id_wypozycz");           
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            
+        }
+        return wynik;
+    } 
     
     public int selectCountUniwersal(String szukana, String tabela, String kolumna) {
         String select="Select COUNT ("+kolumna+") as kod from "+tabela+" where "+kolumna+" LIKE '"+szukana+"';";
@@ -908,7 +976,7 @@ public class DatabaseAPI {
     
     public List selectEgzemplarzByID(int id) {
         //List<Czytelnik> czytelnicyByPESEL = new LinkedList<Czytelnik>();
-        String select="select egzemplarze.id_egzemplarza, ksiazki.tytul, autorzy.nazwisko, autorzy.imie, lokalizacje.nazwa_lokalizacji, stany.nazwa_stanu, wydawnictwa.nazwa_wyd, egzemplarze.rok_wyd, egzemplarze.jezyk FROM egzemplarze INNER JOIN ksiazki ON egzemplarze.id_ksiazki=ksiazki.id_ksiazki JOIN autorzy ON ksiazki.autor=autorzy.id_autora JOIN lokalizacje ON egzemplarze.lokalizacja=lokalizacje.id_lokalizacji JOIN stany ON egzemplarze.stan=stany.id_stanu JOIN wydawnictwa ON egzemplarze.id_wyd=wydawnictwa.id_wydawnictwa where ksiazki.id_ksiazki like '"+id+"';";
+        String select="select egzemplarze.id_egzemplarza, ksiazki.tytul, autorzy.nazwisko, autorzy.imie, lokalizacje.nazwa_lokalizacji, stany.nazwa_stanu, wydawnictwa.nazwa_wyd, egzemplarze.rok_wyd, egzemplarze.jezyk FROM egzemplarze INNER JOIN ksiazki ON egzemplarze.id_ksiazki=ksiazki.id_ksiazki JOIN autorzy ON ksiazki.autor=autorzy.id_autora JOIN lokalizacje ON egzemplarze.lokalizacja=lokalizacje.id_lokalizacji JOIN stany ON egzemplarze.stan=stany.id_stanu JOIN wydawnictwa ON egzemplarze.id_wyd=wydawnictwa.id_wydawnictwa where egzemplarze.id_egzemplarza like '"+id+"';";
         List lista1 = new ArrayList();
         System.out.println(select);
         try {
@@ -948,6 +1016,34 @@ public class DatabaseAPI {
         return true;
     }
     
+    public boolean updateWypozyczenieDataZwrotu(int id, String data)  {
+        String komenda;
+        komenda = "UPDATE wypozyczenia SET data_zwrotu='"+data+"' WHERE id_wypozycz="+id;
+        System.out.println(komenda);
+        try {
+            stat.executeUpdate(komenda);
+        } catch (SQLException e) {
+            System.err.println("Blad przy zmianie w tabeli wypozyczenia");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean updateWypozyczenieDataPlanowana(int id, String data)  {
+        String komenda;
+        komenda = "UPDATE wypozyczenia SET data_planowana='"+data+"' WHERE id_wypozycz="+id;
+        System.out.println(komenda);
+        try {
+            stat.executeUpdate(komenda);
+        } catch (SQLException e) {
+            System.err.println("Blad przy zmianie w tabeli wypozyczenia - data planowana");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
 
     
     
@@ -979,6 +1075,23 @@ public class DatabaseAPI {
             stat.executeUpdate(komenda);
         } catch (SQLException e) {
             System.err.println("Blad przy zmianie w tabeli (edit book)");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean editEgzemplarz(int id_egzemplarza, int lok)  {
+        System.out.println("WYWOLANIE EDIT egzemplarz");
+        String komenda;
+       
+        komenda = "UPDATE egzemplarze SET lokalizacja="+lok+" WHERE id_egzemplarza="+id_egzemplarza;
+        
+        System.out.println(komenda);
+        try {
+            stat.executeUpdate(komenda);
+        } catch (SQLException e) {
+            System.err.println("Blad przy zmianie w tabeli (edit egzemplarz)");
             e.printStackTrace();
             return false;
         }
@@ -1139,6 +1252,46 @@ public class DatabaseAPI {
     
     public String[][] selectEgzemplarzeToTable(int id_ksiazki) {
         String select="select egzemplarze.id_egzemplarza, ksiazki.tytul, autorzy.nazwisko, autorzy.imie, lokalizacje.nazwa_lokalizacji, stany.nazwa_stanu, wydawnictwa.nazwa_wyd, egzemplarze.rok_wyd, egzemplarze.jezyk FROM egzemplarze INNER JOIN ksiazki ON egzemplarze.id_ksiazki=ksiazki.id_ksiazki JOIN autorzy ON ksiazki.autor=autorzy.id_autora JOIN lokalizacje ON egzemplarze.lokalizacja=lokalizacje.id_lokalizacji JOIN stany ON egzemplarze.stan=stany.id_stanu JOIN wydawnictwa ON egzemplarze.id_wyd=wydawnictwa.id_wydawnictwa where ksiazki.id_ksiazki like '"+id_ksiazki+"';";
+        List lista1 = new ArrayList();
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                lista1.add(result.getInt("id_egzemplarza")); //0
+                lista1.add(result.getString("tytul"));       //1
+                lista1.add(result.getString("nazwisko"));   //2
+                lista1.add(result.getString("imie"));      //3
+                lista1.add(result.getString("nazwa_lokalizacji"));        //4
+                lista1.add(result.getString("nazwa_stanu"));   //5
+                lista1.add(result.getString("nazwa_wyd"));      //6
+                lista1.add(result.getString("rok_wyd"));      //7
+                lista1.add(result.getString("jezyk"));      //8
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        int rozmiar=lista1.size();
+        System.out.println(rozmiar);
+         String[][] tmp = new String[rozmiar/9][8];
+         for (int i=0, j=0; i<(rozmiar/9); i++, j+=9)
+         {
+             System.out.println(i+" ");
+             tmp[i][0]=String.format("%08d", lista1.get(j));
+             tmp[i][1]=(String)lista1.get(j+1);
+             String tempo=lista1.get(j+2)+"  "+lista1.get(j+3);
+             tmp[i][2]=tempo;
+             tmp[i][3]=(String)lista1.get(j+4);
+             tmp[i][4]=(String)lista1.get(j+5);
+             tmp[i][5]=(String)lista1.get(j+6);
+             tmp[i][6]=(String)lista1.get(j+7);
+             tmp[i][7]=(String)lista1.get(j+8);
+         }
+        return tmp;
+    }
+    
+    public String[][] selectEgzemplarzeToTableAll() {
+        String select="select egzemplarze.id_egzemplarza, ksiazki.tytul, autorzy.nazwisko, autorzy.imie, lokalizacje.nazwa_lokalizacji, stany.nazwa_stanu, wydawnictwa.nazwa_wyd, egzemplarze.rok_wyd, egzemplarze.jezyk FROM egzemplarze INNER JOIN ksiazki ON egzemplarze.id_ksiazki=ksiazki.id_ksiazki JOIN autorzy ON ksiazki.autor=autorzy.id_autora JOIN lokalizacje ON egzemplarze.lokalizacja=lokalizacje.id_lokalizacji JOIN stany ON egzemplarze.stan=stany.id_stanu JOIN wydawnictwa ON egzemplarze.id_wyd=wydawnictwa.id_wydawnictwa;";
         List lista1 = new ArrayList();
         System.out.println(select);
         try {
