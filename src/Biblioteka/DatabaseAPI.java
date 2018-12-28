@@ -64,7 +64,7 @@ public class DatabaseAPI {
         String createEgzemplarze = "CREATE TABLE IF NOT EXISTS egzemplarze (id_egzemplarza INTEGER PRIMARY KEY AUTOINCREMENT, id_ksiazki int, lokalizacja int, stan int, id_wyd int, rok_wyd varchar(4), jezyk varchar(100))";
         String createLokalizacje = "CREATE TABLE IF NOT EXISTS lokalizacje (id_lokalizacji INTEGER PRIMARY KEY AUTOINCREMENT, nazwa_lokalizacji varchar(255));";
         String createStany = "CREATE TABLE IF NOT EXISTS stany (id_stanu INTEGER PRIMARY KEY AUTOINCREMENT, nazwa_stanu varchar(255));";
-        
+        String createPracownicy = "CREATE TABLE IF NOT EXISTS pracownicy (id_pracownika INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, imie TEXT DEFAULT \"\", nazwisko TEXT DEFAULT \"\")";
         try {
             stat.execute(createCzytelnicy);
             stat.execute(createKsiazki);
@@ -79,6 +79,7 @@ public class DatabaseAPI {
             stat.execute(createMiasta);
             stat.execute(createLokalizacje);
             stat.execute(createStany);
+            stat.execute(createPracownicy);
         } catch (SQLException e) {
             System.err.println("Blad przy tworzeniu tabeli");
             e.printStackTrace();
@@ -215,6 +216,22 @@ public class DatabaseAPI {
             prepStmt.execute();
         } catch (SQLException e) {
             System.err.println("Blad przy dodawaniu autora do bazy");
+            return false;
+        }
+        return true;
+    }
+      
+      public boolean insertPracownik(String nazwisko, String imie, String login, String haslo) {
+        try {
+            PreparedStatement prepStmt = conn.prepareStatement(
+                    "insert into pracownicy values (NULL, ?, ?, ?, ?);");
+            prepStmt.setString(1, login);
+            prepStmt.setString(2, haslo);
+            prepStmt.setString(3, imie);
+            prepStmt.setString(4, nazwisko);
+            prepStmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Blad przy dodawaniu pracownika do bazy");
             return false;
         }
         return true;
@@ -845,6 +862,35 @@ public class DatabaseAPI {
     }
     
     
+    public String[][] selectPracownicy(String a,String be,String c,String d) {
+        String select="select id_pracownika, imie, nazwisko, username from pracownicy where id_pracownika like '"+a+"' AND imie like '"+be+"' AND nazwisko like '"+c+"' AND username like '"+d+"';";
+        List lista1 = new ArrayList();
+        System.out.println(select);
+        try {
+            ResultSet result = stat.executeQuery(select);
+            while(result.next()) {
+                lista1.add(result.getInt("id_pracownika")); //0
+                lista1.add(result.getString("imie"));       //1
+                lista1.add(result.getString("nazwisko"));   //2
+                lista1.add(result.getString("username"));      //3
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        int rozmiar=lista1.size();
+        System.out.println(rozmiar);
+         String[][] tmp = new String[rozmiar/4][4];
+         for (int i=0, j=0; i<(rozmiar/4); i++, j+=4)
+         {
+             tmp[i][0]=String.format("%06d", lista1.get(j));
+             tmp[i][1]=(String)lista1.get(j+1);
+             tmp[i][2]=(String)lista1.get(j+2);
+             tmp[i][3]=(String)lista1.get(j+3);
+         }
+        return tmp;
+    }
+    
     public String[][] selectCzytelnicyZAdresem_WherePESEL(String pesel) {
         String select="SELECT czytelnicy.id_czytelnika, czytelnicy.imie, czytelnicy.nazwisko, czytelnicy.pesel, czytelnicy.DOB, czytelnicy.username, czytelnicy.password, czytelnicy.email, ulice.ulica, czytelnicy.numer_domu, miasta.miasto, miasta.kod, czytelnicy.telefon FROM czytelnicy INNER JOIN ulice ON ulice.id_ulice = czytelnicy.ulica_id INNER JOIN miasta ON miasta.id_miasta = czytelnicy.miasto_id WHERE czytelnicy.pesel='"+pesel+"';";
         List lista1 = new ArrayList();
@@ -1016,6 +1062,34 @@ public class DatabaseAPI {
         return true;
     }
     
+    public boolean updatePracownik(int id, String imie, String nazwisko, String login, String password) {
+        String komenda;
+        komenda = "UPDATE pracownicy SET imie='"+imie+"',  nazwisko='"+nazwisko+"', username='"+login+"', password='"+password+"' WHERE id_pracownika="+id;
+        System.out.println(komenda);
+        try {
+            stat.executeUpdate(komenda);
+        } catch (SQLException e) {
+            System.err.println("Blad przy zmianie w tabeli pracownicy");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean updatePracownik(int id, String imie, String nazwisko, String login) {
+        String komenda;
+        komenda = "UPDATE pracownicy SET imie='"+imie+"',  nazwisko='"+nazwisko+"', username='"+login+"' WHERE id_pracownika="+id;
+        System.out.println(komenda);
+        try {
+            stat.executeUpdate(komenda);
+        } catch (SQLException e) {
+            System.err.println("Blad przy zmianie w tabeli pracownicy");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
     public boolean updateWypozyczenieDataZwrotu(int id, String data)  {
         String komenda;
         komenda = "UPDATE wypozyczenia SET data_zwrotu='"+data+"' WHERE id_wypozycz="+id;
@@ -1125,6 +1199,20 @@ public class DatabaseAPI {
             stat.executeUpdate(komenda);
         } catch (SQLException e) {
             System.err.println("Blad przy usuwaniu z tabeli");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
+    public boolean DeletePracownikId(String id)  {
+        String komenda;
+        komenda = "DELETE FROM pracownicy WHERE id_pracownika="+id;
+        System.out.println(komenda);
+        try {
+            stat.executeUpdate(komenda);
+        } catch (SQLException e) {
+            System.err.println("Blad przy usuwaniu z tabeli pracownicy");
             e.printStackTrace();
             return false;
         }
