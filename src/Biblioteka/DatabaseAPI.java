@@ -1090,6 +1090,20 @@ public class DatabaseAPI {
         return true;
     }
     
+    public boolean updatePracownik(String login, String pass) {
+        String komenda;
+        komenda = "UPDATE pracownicy SET password='"+pass+"' WHERE username like '"+login+"';";
+        System.out.println(komenda);
+        try {
+            stat.executeUpdate(komenda);
+        } catch (SQLException e) {
+            System.err.println("Blad przy zmianie hasla w tabeli pracownicy");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    
     public boolean updateWypozyczenieDataZwrotu(int id, String data)  {
         String komenda;
         komenda = "UPDATE wypozyczenia SET data_zwrotu='"+data+"' WHERE id_wypozycz="+id;
@@ -1122,7 +1136,7 @@ public class DatabaseAPI {
     
     
     public boolean editCzytelnik(String PESEL, String name, String surname, String username, String nr, String email, String phone, Float debt)  {
-        System.out.println("WYWOLANIE EDIT user");
+       
         String komenda;
        
         komenda = "UPDATE czytelnicy SET imie='"+name+"', nazwisko='"+surname+"',username='"+username+"',numer_domu='"+nr+"',email='"+email+"',telefon='"+phone+"',zadluzenie='"+debt+"' WHERE pesel="+PESEL;
@@ -1277,11 +1291,9 @@ public class DatabaseAPI {
             return null;
         }
         int rozmiar=lista1.size();
-        System.out.println(rozmiar);
          String[][] tmp = new String[rozmiar/7][6];
          for (int i=0, j=0; i<(rozmiar/7); i++, j+=7)
          {
-             System.out.println(i+" ");
              tmp[i][0]=String.format("%08d", lista1.get(j));
              tmp[i][1]=(String)lista1.get(j+1);
              String tempo=lista1.get(j+2)+"  "+lista1.get(j+3);
@@ -1318,11 +1330,9 @@ public class DatabaseAPI {
             return null;
         }
         int rozmiar=lista1.size();
-        System.out.println(rozmiar);
          String[][] tmp = new String[rozmiar/9][7];
          for (int i=0, j=0; i<(rozmiar/9); i++, j+=9)
          {
-             System.out.println(i+" ");
              tmp[i][0]=String.format("%08d", lista1.get(j));
              tmp[i][1]=(String)lista1.get(j+1);
              String tempo=lista1.get(j+2)+"  "+lista1.get(j+3);
@@ -1360,11 +1370,9 @@ public class DatabaseAPI {
             return null;
         }
         int rozmiar=lista1.size();
-        System.out.println(rozmiar);
          String[][] tmp = new String[rozmiar/9][8];
          for (int i=0, j=0; i<(rozmiar/9); i++, j+=9)
          {
-             System.out.println(i+" ");
              tmp[i][0]=String.format("%08d", lista1.get(j));
              tmp[i][1]=(String)lista1.get(j+1);
              String tempo=lista1.get(j+2)+"  "+lista1.get(j+3);
@@ -1400,11 +1408,9 @@ public class DatabaseAPI {
             return null;
         }
         int rozmiar=lista1.size();
-        System.out.println(rozmiar);
          String[][] tmp = new String[rozmiar/9][8];
          for (int i=0, j=0; i<(rozmiar/9); i++, j+=9)
          {
-             System.out.println(i+" ");
              tmp[i][0]=String.format("%08d", lista1.get(j));
              tmp[i][1]=(String)lista1.get(j+1);
              String tempo=lista1.get(j+2)+"  "+lista1.get(j+3);
