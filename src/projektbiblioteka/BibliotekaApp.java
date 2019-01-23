@@ -2753,7 +2753,6 @@ public class BibliotekaApp extends javax.swing.JFrame {
         LogowanieFrame.setTitle("Logowanie");
         LogowanieFrame.setModal(true);
         LogowanieFrame.setUndecorated(true);
-        LogowanieFrame.setPreferredSize(new java.awt.Dimension(400, 290));
         LogowanieFrame.setResizable(false);
         LogowanieFrame.setSize(new java.awt.Dimension(400, 290));
 
@@ -2813,7 +2812,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel11Layout.createSequentialGroup()
-                        .addGap(0, 76, Short.MAX_VALUE)
+                        .addGap(0, 78, Short.MAX_VALUE)
                         .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
                                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -3316,7 +3315,7 @@ public class BibliotekaApp extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Biblioteka");
+        setTitle("System Biblioteczny Bookworm");
         setBackground(new java.awt.Color(204, 255, 204));
         setFocusable(false);
         setLocation(new java.awt.Point(0, 0));
@@ -5773,7 +5772,17 @@ public class BibliotekaApp extends javax.swing.JFrame {
         String password=pass.getText();
         //System.out.println(hashPassword("Kowalska"));
         String passHash=b.selectSzukanaWhereWarunek("password", "pracownicy", "username", username);
-        if (passHash.equals("")) komunikatL.setText("nie ma uzytkownika");
+        if (passHash.equals("")) 
+        {
+            komunikatL.setText("nie ma uzytkownika");
+            if (username.equals("admin")) 
+            {
+                b.insertPracownik("admin", "admin", "admin", hashPassword("admin"));
+                pass.setText("admin");
+                
+                komunikatL.setText("dodano użytkownika admin/admin");
+            }
+        }
           else {
                  //System.out.println(passHash);
                  if (PasswordEncryption.checkPassword(password,passHash))

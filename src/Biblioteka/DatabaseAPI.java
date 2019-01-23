@@ -44,6 +44,7 @@ public class DatabaseAPI {
             stat = conn.createStatement();
         } catch (SQLException e) {
             System.err.println("Problem z otwarciem polaczenia");
+            System.out.println("Problem z otwarciem polaczenia");
             e.printStackTrace();
         }
 
@@ -53,7 +54,7 @@ public class DatabaseAPI {
     public boolean createTables()  {
         String createCzytelnicy = "CREATE TABLE IF NOT EXISTS czytelnicy (id_czytelnika INTEGER PRIMARY KEY AUTOINCREMENT, imie varchar ( 255 ) NOT NULL, nazwisko varchar ( 255 ) NOT NULL, pesel varchar ( 11 ) NOT NULL UNIQUE, DOB varchar(12) NOT NULL, email varchar ( 40 ) UNIQUE, username varchar ( 40 ) UNIQUE, password varchar NOT NULL, zadluzenie REAL DEFAULT 0, miasto_id INTEGER, ulica_id INTEGER, numer_domu varchar (10), telefon varchar (20))";
         String createWypozyczenia = "CREATE TABLE IF NOT EXISTS wypozyczenia (id_wypozycz INTEGER PRIMARY KEY AUTOINCREMENT, id_czytelnika int, id_egzemplarza int, data_wypozyczenia VARCHAR(10), data_planowana VARCHAR(10), data_zwrotu VARCHAR(10))";
-        String createUlice = "CREATE TABLE IF NOT EXISTS ulice (id_ulice INTEGER PRIMARY KEY AUTOINCREMENT, ulica varchar(255), numer varchar(255))";
+        String createUlice = "CREATE TABLE IF NOT EXISTS ulice (id_ulice INTEGER PRIMARY KEY AUTOINCREMENT, ulica varchar(255))";
         String createMiasta = "CREATE TABLE IF NOT EXISTS miasta (id_miasta INTEGER PRIMARY KEY AUTOINCREMENT, miasto varchar(255), kod varchar(6))";
         String createAutorzy = "CREATE TABLE IF NOT EXISTS autorzy (id_autora INTEGER PRIMARY KEY AUTOINCREMENT, nazwisko varchar(100), imie varchar(30))";
         String createDzialy = "CREATE TABLE IF NOT EXISTS dzialy (id_dzialu INTEGER PRIMARY KEY AUTOINCREMENT, nazwa_dzi varchar(100))";
